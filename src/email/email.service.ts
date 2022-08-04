@@ -5,8 +5,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { randomBytes } from 'crypto';
 import { createTransport } from 'nodemailer';
 
-import { config } from '../config';
-
 // 스키마 등록
 import { Email, EmailDocument } from './schemas/email.schema';
 
@@ -19,8 +17,8 @@ const transporter = createTransport({
   secure: true, // 다른 port를 사용해야 되면 false 값을 주어야 합니다.
   port: 465, // google mail server port
   auth: {
-    user: config.MAIL_ADDRESS,
-    pass: config.MAIL_PASSWORD,
+    user: process.env.MAIL_ADDRESS,
+    pass: process.env.MAIL_PASSWORD,
   },
 });
 
@@ -51,7 +49,7 @@ export class EmailService {
   // 이메일 발송
   async _send(email: Email) {
     await transporter.sendMail({
-      from: `"Get-P" <${config.MAIL_ADDRESS}>`,
+      from: `"Get-P" <${process.env.MAIL_ADDRESS}>`,
       to: email.address,
       subject: `[Get-P] 이메일 인증`,
       html: `<p>인증을 완료해주세요</p>
