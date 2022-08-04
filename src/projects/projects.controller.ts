@@ -1,7 +1,15 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+// 라이브러리 등록
+import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { Types } from 'mongoose';
+
+// Data Transfer Object 등록
 import { CreateProjectDto } from './dto/create-project.dto';
+
+// 서비스 등록
 import { ProjectsService } from './projects.service';
+
+// 스키마 등록
 import { Project } from './schemas/project.schema';
 
 @Controller('projects')
@@ -16,6 +24,7 @@ export class ProjectsController {
   }
 
   // 프로젝트 생성
+  @UseGuards(AuthGuard('jwt'))
   @Post()
   async create(@Body() createProjectDto: CreateProjectDto): Promise<Project> {
     const project = await this.projectsService.create(createProjectDto);

@@ -1,6 +1,7 @@
 // 라이브러리 등록
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule } from '@nestjs/config';
 
 // 컨트롤러 등록
 import { AppController } from './app.controller';
@@ -14,15 +15,16 @@ import { CompanyModule } from './company/company.module';
 import { ProjectsModule } from './projects/projects.module';
 import { AuthModule } from './auth/auth.module';
 
-import { config } from './config';
-
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    MongooseModule.forRoot(process.env.DB_URI),
     AuthModule,
     PeopleModule,
     CompanyModule,
     ProjectsModule,
-    MongooseModule.forRoot(config.DB_URI),
   ],
   controllers: [AppController],
   providers: [AppService],
