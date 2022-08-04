@@ -1,6 +1,13 @@
+// 라이브러리 등록
 import { Controller, Get, Post, Body } from '@nestjs/common';
+
+// Data Transfer Object 등록
 import { CreatePeopleDto } from './dto/create-people.dto';
+
+// 서비스 등록
 import { PeopleService } from './people.service';
+
+// 스키마 등록
 import { People } from './schemas/people.schema';
 
 @Controller('people')

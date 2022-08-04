@@ -9,22 +9,19 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 // 모듈 등록
-// import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
 import { PeopleModule } from './people/people.module';
 import { CompanyModule } from './company/company.module';
 import { ProjectsModule } from './projects/projects.module';
-import { EmailModule } from './email/email.module';
+import { AuthModule } from './auth/auth.module';
 
 import { config } from './config';
 
 @Module({
   imports: [
-    UsersModule,
+    AuthModule,
     PeopleModule,
     CompanyModule,
     ProjectsModule,
-    EmailModule,
     MongooseModule.forRoot(config.DB_URI),
   ],
   controllers: [AppController],

@@ -1,8 +1,15 @@
+// 라이브러리 등록
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+
+// 스키마 등록
 import { Company, CompanyDocument } from './schemas/company.schema';
+
+// Data Transfer Object 등록
 import { CreateCompanyDto } from './dto/create-company.dto';
+
+// 서비스 등록
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
