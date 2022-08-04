@@ -1,12 +1,17 @@
+// 라이브러리 등록
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { randomBytes } from 'crypto';
 import { createTransport } from 'nodemailer';
 
-import { Email, EmailDocument } from './schemas/email.schema';
-import { CreateEmailDto } from './dto/create-email.dto';
 import { config } from '../config';
+
+// 스키마 등록
+import { Email, EmailDocument } from './schemas/email.schema';
+
+// Data Transfer Object 등록
+import { CreateEmailDto } from './dto/create-email.dto';
 
 const transporter = createTransport({
   service: 'gmail',
@@ -50,7 +55,7 @@ export class EmailService {
       to: email.address,
       subject: `[Get-P] 이메일 인증`,
       html: `<p>인증을 완료해주세요</p>
-              <p><a href="http://localhost:8080/api/users/verify/?email=${email.address}&code=${email.code}">인증하기</a></p>`,
+              <p><a href="http://localhost:8080/users/verify/?address=${email.address}&code=${email.code}">인증하기</a></p>`,
     });
   }
 

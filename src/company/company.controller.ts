@@ -1,6 +1,13 @@
+// 라이브러리 등록
 import { Body, Controller, Get, Post } from '@nestjs/common';
+
+// 서비스 등록
 import { CompanyService } from './company.service';
+
+// Data Transfer Object 등록
 import { CreateCompanyDto } from './dto/create-company.dto';
+
+// 스키마 등록
 import { Company } from './schemas/company.schema';
 
 @Controller('company')

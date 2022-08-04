@@ -1,6 +1,9 @@
-import { Strategy } from 'passport-local';
+// 라이브러리 등록
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Strategy } from 'passport-local';
+
+// 서비스 등록
 import { AuthService } from './auth.service';
 
 @Injectable()

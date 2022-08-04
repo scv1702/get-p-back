@@ -13,12 +13,10 @@ import { User, UserSchema } from './schemas/user.schema';
 
 // 모듈 등록
 import { EmailModule } from 'src/email/email.module';
-// import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
-    // AuthModule,
     EmailModule,
   ],
   providers: [UsersService],

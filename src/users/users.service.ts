@@ -7,9 +7,6 @@ import { randomBytes, pbkdf2 } from 'crypto';
 // 스키마 등록
 import { User, UserDocument } from './schemas/user.schema';
 
-// Data Transfer Object 등록
-import { VerifyUserDto } from './dto/verify-user.dto';
-
 // 서비스 등록
 import { EmailService } from 'src/email/email.service';
 
@@ -32,16 +29,9 @@ export class UsersService {
     return user;
   }
 
-  // 특성 이메일과 비밀번호를 가진 사용자 조회
-  async findOneByEmailAndPassword(
-    email: string,
-    password: string,
-    options: object = {},
-  ) {
-    const user = await this.userModel
-      .findOne({ email, password })
-      .select(options);
-    return user;
+  async find(options: object = {}) {
+    const users = await this.userModel.find(options);
+    return users;
   }
 
   // 회원가입 요청 처리
@@ -113,8 +103,7 @@ export class UsersService {
   }
 
   // 이메일 검증
-  async verify(verifyUserDto: VerifyUserDto) {
-    const { address, code } = verifyUserDto;
+  async verify(address: string, code: string) {
     const email = await this.emailService.findOne(address);
     if (code !== email.code) {
       throw new HttpException(
