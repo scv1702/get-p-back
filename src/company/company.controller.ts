@@ -17,14 +17,12 @@ export class CompanyController {
   // 전체 회사 목록 조회
   @Get()
   async findAll(): Promise<Array<Company>> {
-    const companyList = await this.companyService.findAll();
-    return companyList;
+    return await this.companyService.findAll();
   }
 
   // 회사 회원가입
   @Post()
   async signUp(@Body() createCompanyDto: CreateCompanyDto): Promise<Company> {
-    const company = await this.companyService.signUp(createCompanyDto);
-    return company;
+    return await this.companyService.signUp(createCompanyDto);
   }
 }

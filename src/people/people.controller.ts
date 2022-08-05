@@ -17,14 +17,12 @@ export class PeopleController {
   // 전체 피플 목록 조회
   @Get()
   async findAll(): Promise<Array<People>> {
-    const peopleList = await this.peopleService.findAll();
-    return peopleList;
+    return await this.peopleService.findAll();
   }
 
   // 피플 회원가입
   @Post()
   async signUp(@Body() createPeopleDto: CreatePeopleDto): Promise<People> {
-    const people = await this.peopleService.signUp(createPeopleDto);
-    return people;
+    return await this.peopleService.signUp(createPeopleDto);
   }
 }

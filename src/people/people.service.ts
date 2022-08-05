@@ -28,16 +28,14 @@ export class PeopleService {
   async signUp(createPeopleDto: CreatePeopleDto): Promise<People> {
     const { email, password, ...remainder } = createPeopleDto;
     const user = await this.usersService.signUp(email, password, 'people');
-    const people = await this.create({
+    return await this.create({
       ...remainder,
       userObjectId: user._id,
     });
-    return people;
   }
 
   // 전체 피플 목록 조회
   async findAll(): Promise<Array<People>> {
-    const peopleList = await this.peopleModel.find({});
-    return peopleList;
+    return await this.peopleModel.find({});
   }
 }

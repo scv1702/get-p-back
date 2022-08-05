@@ -50,9 +50,7 @@ export class AuthService {
 
   // 이메일 검증
   async verify(address: string) {
-    let user = await this.usersService.findByEmail(address);
-    user.verify = true;
-    await user.save();
+    await this.usersService.verify(address);
     return { message: '이메일 인증에 성공했습니다.' };
   }
 }

@@ -50,7 +50,9 @@ export class ProjectsController {
     if (req.user.category === 'company') {
       return await this.projectsService.create(req.user._id, createProjectDto);
     }
-    throw new UnauthorizedException('회사 회원만 프로젝트 생성이 가능합니다.');
+    throw new UnauthorizedException(
+      '회사 회원만 프로젝트를 등록할 수 있습니다.',
+    );
   }
 
   // 프로젝트 조회

@@ -27,15 +27,13 @@ export class CompanyService {
   async signUp(createCompanyDto: CreateCompanyDto): Promise<Company> {
     const { email, password, ...remainder } = createCompanyDto;
     const user = await this.usersService.signUp(email, password, 'company');
-    const company = await this.create({
+    return await this.create({
       ...remainder,
       userObjectId: user._id,
     });
-    return company;
   }
 
   async findAll(): Promise<Array<Company>> {
-    const companyList = await this.companyModel.find({});
-    return companyList;
+    return await this.companyModel.find({});
   }
 }
