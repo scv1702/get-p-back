@@ -1,5 +1,8 @@
+// 라이브러리 등록
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+
+// 모듈 등록
 import { AppModule } from './app.module';
 
 async function bootstrap() {

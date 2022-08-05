@@ -17,7 +17,7 @@ export class UsersService {
     private emailService: EmailService,
   ) {}
 
-  // 사용자 목록 조회
+  // 전체 사용자 조회
   async findAll(): Promise<Array<User>> {
     const users = await this.userModel.find({});
     return users;
@@ -39,7 +39,7 @@ export class UsersService {
     const user = await this.findOneByEmail(email);
     if (!user) {
       const createdUser = await this._signUp(email, password, category);
-      this.emailService.send({ address: email });
+      // this.emailService.send(email);
       return createdUser;
     } else {
       throw new HttpException(
@@ -52,7 +52,7 @@ export class UsersService {
     }
   }
 
-  // 사용자 도큐먼트 생성
+  // 사용자 생성
   async create(user) {
     const createdUser = new this.userModel(user);
     return createdUser.save();
@@ -100,23 +100,5 @@ export class UsersService {
         );
       });
     });
-  }
-
-  // 이메일 검증
-  async verify(address: string, code: string) {
-    const email = await this.emailService.findOne(address);
-    if (code !== email.code) {
-      throw new HttpException(
-        {
-          status: HttpStatus.FORBIDDEN,
-          error: '이메일 인증에 문제가 생겼습니다. 다시 시도해주세요.',
-        },
-        HttpStatus.FORBIDDEN,
-      );
-    } else {
-      let user = await this.findOneByEmail(address);
-      user.verify = true;
-      await user.save();
-    }
   }
 }

@@ -1,9 +1,18 @@
+// 라이브러리 등록
 import { Module } from '@nestjs/common';
-import { ProjectsService } from './projects.service';
-import { Project, ProjectSchema } from './schemas/project.schema';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AuthModule } from 'src/auth/auth.module';
+
+// 서비스 등록
+import { ProjectsService } from './projects.service';
+
+// 스키마 등록
+import { Project, ProjectSchema } from './schemas/project.schema';
+
+// 컨트롤러 등록
 import { ProjectsController } from './projects.controller';
+
+// 모듈 등록
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [

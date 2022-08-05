@@ -8,9 +8,6 @@ import { createTransport } from 'nodemailer';
 // 스키마 등록
 import { Email, EmailDocument } from './schemas/email.schema';
 
-// Data Transfer Object 등록
-import { CreateEmailDto } from './dto/create-email.dto';
-
 const transporter = createTransport({
   service: 'gmail',
   host: 'smtp.gmail.com',
@@ -21,6 +18,7 @@ const transporter = createTransport({
     pass: process.env.MAIL_PASSWORD,
   },
 });
+// 너무 많이 시도해서 lock 걸렸을 때 "https://accounts.google.com/DisplayUnlockCaptcha"에서 승인 필요
 
 @Injectable()
 export class EmailService {
@@ -34,7 +32,7 @@ export class EmailService {
   }
 
   // 이메일 도큐먼트 생성
-  async create(email): Promise<Email> {
+  async create(email: any): Promise<Email> {
     const createdEmail = new this.emailModel(email);
     return createdEmail.save();
   }
@@ -53,13 +51,12 @@ export class EmailService {
       to: email.address,
       subject: `[Get-P] 이메일 인증`,
       html: `<p>인증을 완료해주세요</p>
-              <p><a href="http://localhost:8080/users/verify/?address=${email.address}&code=${email.code}">인증하기</a></p>`,
+              <p><a href="http://localhost:8080/auth/verify?address=${email.address}&code=${email.code}">인증하기</a></p>`,
     });
   }
 
   // 이메일 발송 요청 처리
-  async send(createEmailDto: CreateEmailDto) {
-    const { address } = createEmailDto;
+  async send(address: string) {
     const code = this.createVerifyCode();
     const email = await this.create({ address, code });
     await this._send(email);

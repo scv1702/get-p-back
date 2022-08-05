@@ -1,5 +1,5 @@
 // 라이브러리 등록
-import { Controller, Get, Post, Query } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 
 // 스키마 등록
 import { User } from './schemas/user.schema';
@@ -16,15 +16,5 @@ export class UsersController {
   async findAll(): Promise<Array<User>> {
     const users = await this.usersService.findAll();
     return users;
-  }
-
-  // 로그인
-  @Post('signin')
-  signin() {}
-
-  // 이메일 검증
-  @Get('verify')
-  async verify(@Query('address') address: string, @Query('code') code: string) {
-    await this.usersService.verify(address, code);
   }
 }

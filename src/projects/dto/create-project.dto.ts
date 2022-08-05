@@ -1,10 +1,6 @@
 import { IsString, IsNumber, IsDate } from 'class-validator';
 
 export class CreateProjectDto {
-  // 해당 프로젝트 수행을 의뢰한 회사
-  @IsString()
-  requester: string;
-
   // 프로젝트 미팅 방식. 온라인: 0, 오프라인: 1
   @IsNumber()
   meeting: number;
@@ -34,12 +30,12 @@ export class CreateProjectDto {
   attachmentUrl: string;
 
   // 지원자 모집 마감일
-  @IsDate()
-  applicationDeadline: Date;
+  @IsString()
+  applicationDeadline: string;
 
   // 작업 마감일
-  @IsDate()
-  deadline: Date;
+  @IsString()
+  deadline: string;
 
   // 작업 기간 (일 단위)
   @IsNumber()

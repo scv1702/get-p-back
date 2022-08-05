@@ -1,5 +1,12 @@
 // 라이브러리 등록
-import { Controller, Request, Post, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Request,
+  Post,
+  UseGuards,
+  Get,
+  Query,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 // 서비스 등록
@@ -14,5 +21,11 @@ export class AuthController {
   @Post('login')
   async login(@Request() req) {
     return this.authService.login(req.user);
+  }
+
+  // 이메일 검증
+  @Get('verify')
+  async verify(@Query('address') address: string, @Query('code') code: string) {
+    await this.authService.verify(address, code);
   }
 }

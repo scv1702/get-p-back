@@ -25,28 +25,10 @@ export class CompanyService {
   }
 
   async signUp(createCompanyDto: CreateCompanyDto): Promise<Company> {
-    const {
-      name,
-      // companyImage,
-      industry,
-      ceo,
-      description,
-      phoneNumber,
-      url,
-      address,
-      email,
-      password,
-    } = createCompanyDto;
+    const { email, password, ...remainder } = createCompanyDto;
     const user = await this.usersService.signUp(email, password, 'company');
     const company = await this.create({
-      name,
-      // companyImage,
-      industry,
-      ceo,
-      description,
-      phoneNumber,
-      url,
-      address,
+      ...remainder,
       userObjectId: user._id,
     });
     return company;
