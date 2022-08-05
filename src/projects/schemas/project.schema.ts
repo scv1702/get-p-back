@@ -3,6 +3,7 @@ import { Document, Types } from 'mongoose';
 
 import { Company } from 'src/company/schemas/company.schema';
 import { People } from 'src/people/schemas/people.schema';
+import { Proposal } from 'src/proposals/schemas/proposal.schema';
 
 export type ProjectDocument = Project & Document;
 
@@ -15,12 +16,12 @@ export class Project {
   requester: Company;
 
   // 받은 제안 리스트
-  @Prop({ type: [Types.ObjectId], ref: 'Company' })
-  proposals: [Company];
+  @Prop({ type: [Types.ObjectId], ref: 'Proposal' })
+  proposals: [Proposal];
 
   // 받은 제안들 중에서 회사가 프로젝트를 수행하도록 고용한 people
   @Prop({ type: Types.ObjectId, ref: 'People' })
-  performer: [People];
+  performer: People;
 
   // 프로젝트 미팅 방식. 온라인: 0, 오프라인: 1
   @Prop({ required: true })

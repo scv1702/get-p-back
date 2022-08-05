@@ -1,5 +1,9 @@
 // 라이브러리 등록
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { randomBytes, pbkdf2 } from 'crypto';
@@ -24,7 +28,7 @@ export class UsersService {
   }
 
   // 특성 이메일을 가진 사용자 조회
-  async findOneByEmail(email: string, options: object = {}) {
+  async findByEmail(email: string, options: object = {}) {
     const user = await this.userModel.findOne({ email }).select(options);
     return user;
   }
@@ -36,24 +40,19 @@ export class UsersService {
 
   // 회원가입 요청 처리
   async signUp(email: string, password: string, category: string) {
-    const user = await this.findOneByEmail(email);
+    const user = await this.findByEmail(email);
     if (!user) {
       const createdUser = await this._signUp(email, password, category);
       // this.emailService.send(email);
       return createdUser;
-    } else {
-      throw new HttpException(
-        {
-          status: HttpStatus.FORBIDDEN,
-          error: '이미 가입된 이메일 입니다. 다른 이메일을 입력해주세요.',
-        },
-        HttpStatus.FORBIDDEN,
-      );
     }
+    throw new ForbiddenException(
+      '이미 가입된 이메일 입니다. 다른 이메일을 입력해주세요.',
+    );
   }
 
   // 사용자 생성
-  async create(user) {
+  async create(user: any): Promise<User> {
     const createdUser = new this.userModel(user);
     return createdUser.save();
   }
@@ -64,12 +63,8 @@ export class UsersService {
       // salt 값 생성
       randomBytes(64, (err, buf) => {
         if (err) {
-          throw new HttpException(
-            {
-              status: HttpStatus.INTERNAL_SERVER_ERROR,
-              error: '회원 가입에 문제가 생겼습니다. 다시 시도해주세요.',
-            },
-            HttpStatus.INTERNAL_SERVER_ERROR,
+          throw new InternalServerErrorException(
+            '회원 가입에 문제가 생겼습니다. 다시 시도해주세요.',
           );
         }
         // 비밀번호 암호화
@@ -81,12 +76,8 @@ export class UsersService {
           'sha512',
           async (err, key) => {
             if (err) {
-              throw new HttpException(
-                {
-                  status: HttpStatus.INTERNAL_SERVER_ERROR,
-                  error: '회원 가입에 문제가 생겼습니다. 다시 시도해주세요.',
-                },
-                HttpStatus.INTERNAL_SERVER_ERROR,
+              throw new InternalServerErrorException(
+                '회원 가입에 문제가 생겼습니다. 다시 시도해주세요.',
               );
             }
             const user = await this.create({

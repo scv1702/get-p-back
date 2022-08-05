@@ -20,7 +20,7 @@ export class AuthService {
 
   // 이메일 및 비밀번호 유효성 검사
   async validateUser(email: string, password: string) {
-    const user = await this.usersService.findOneByEmail(email, { salt: 1 });
+    const user = await this.usersService.findByEmail(email, { salt: 1 });
     if (user) {
       const key = pbkdf2Sync(password, user.salt, 100000, 64, 'sha512');
       const findedUser = await this.usersService.find({
@@ -49,21 +49,10 @@ export class AuthService {
   }
 
   // 이메일 검증
-  async verify(address: string, code: string) {
-    const email = await this.emailService.findOne(address);
-    if (code !== email.code) {
-      throw new HttpException(
-        {
-          status: HttpStatus.FORBIDDEN,
-          error: '이메일 인증에 문제가 생겼습니다. 다시 시도해주세요.',
-        },
-        HttpStatus.FORBIDDEN,
-      );
-    } else {
-      let user = await this.usersService.findOneByEmail(address);
-      user.verify = true;
-      await user.save();
-      return { message: '이메일 인증에 성공했습니다.' };
-    }
+  async verify(address: string) {
+    let user = await this.usersService.findByEmail(address);
+    user.verify = true;
+    await user.save();
+    return { message: '이메일 인증에 성공했습니다.' };
   }
 }
