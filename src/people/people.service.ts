@@ -26,24 +26,10 @@ export class PeopleService {
 
   // 피플 회원가입
   async signUp(createPeopleDto: CreatePeopleDto): Promise<People> {
-    const {
-      school,
-      major,
-      activityArea,
-      description,
-      portfolio,
-      phoneNumber,
-      email,
-      password,
-    } = createPeopleDto;
+    const { email, password, ...remainder } = createPeopleDto;
     const user = await this.usersService.signUp(email, password, 'people');
     const people = await this.create({
-      school,
-      major,
-      activityArea,
-      description,
-      portfolio,
-      phoneNumber,
+      ...remainder,
       userObjectId: user._id,
     });
     return people;

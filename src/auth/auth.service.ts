@@ -1,14 +1,19 @@
 // 라이브러리 등록
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { pbkdf2Sync } from 'crypto';
 
 // 서비스 등록
 import { UsersService } from 'src/users/users.service';
+import { EmailService } from 'src/email/email.service';
+
+// 스키마 등록
+import { User } from 'src/users/schemas/user.schema';
 
 @Injectable()
 export class AuthService {
   constructor(
+    private emailService: EmailService,
     private usersService: UsersService,
     private jwtService: JwtService,
   ) {}
@@ -21,7 +26,6 @@ export class AuthService {
       const findedUser = await this.usersService.find({
         email,
         password: key.toString('base64'),
-        verify: true,
       });
       if (findedUser) {
         return findedUser;
@@ -31,14 +35,35 @@ export class AuthService {
   }
 
   // JWT 발급
-  async login(user) {
+  async login(user: User) {
     const payload = {
       _id: user._id,
       email: user.email,
-      cateogry: user.category,
+      category: user.category,
     };
     return {
-      accessToken: this.jwtService.sign(payload),
+      accessToken: this.jwtService.sign(payload, {
+        secret: process.env.JWT_SECRET,
+      }),
     };
+  }
+
+  // 이메일 검증
+  async verify(address: string, code: string) {
+    const email = await this.emailService.findOne(address);
+    if (code !== email.code) {
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: '이메일 인증에 문제가 생겼습니다. 다시 시도해주세요.',
+        },
+        HttpStatus.FORBIDDEN,
+      );
+    } else {
+      let user = await this.usersService.findOneByEmail(address);
+      user.verify = true;
+      await user.save();
+      return { message: '이메일 인증에 성공했습니다.' };
+    }
   }
 }

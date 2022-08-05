@@ -52,7 +52,7 @@ export class Project {
 
   // 지원자 모집 마감일
   @Prop({ required: true })
-  applicationDeadline: Date;
+  applicationDeadline: string;
 
   // 작업 마감일
   @Prop({ required: true })
@@ -60,7 +60,7 @@ export class Project {
 
   // 작업 기간 (일 단위)
   @Prop({ required: true })
-  duration: number;
+  duration: Date;
 
   // 프로젝트 태그 (최대 8개)
   @Prop({ required: true })

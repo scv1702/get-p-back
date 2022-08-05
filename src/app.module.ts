@@ -14,6 +14,7 @@ import { PeopleModule } from './people/people.module';
 import { CompanyModule } from './company/company.module';
 import { ProjectsModule } from './projects/projects.module';
 import { AuthModule } from './auth/auth.module';
+import { ProposalsModule } from './proposals/proposals.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { AuthModule } from './auth/auth.module';
     PeopleModule,
     CompanyModule,
     ProjectsModule,
+    ProposalsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
