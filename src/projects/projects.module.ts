@@ -13,10 +13,12 @@ import { ProjectsController } from './projects.controller';
 
 // 모듈 등록
 import { AuthModule } from 'src/auth/auth.module';
+import { ProposalsModule } from 'src/proposals/proposals.module';
 
 @Module({
   imports: [
     AuthModule,
+    ProposalsModule,
     MongooseModule.forFeature([{ name: Project.name, schema: ProjectSchema }]),
   ],
   providers: [ProjectsService],

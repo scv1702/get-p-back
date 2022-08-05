@@ -10,11 +10,15 @@ import {
   Delete,
   Request,
   UnauthorizedException,
+  NotFoundException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { CreateProposalDto } from 'src/proposals/dto/create-proposal.dto';
+import { ProposalsService } from 'src/proposals/proposals.service';
 
 // Data Transfer Object 등록
 import { CreateProjectDto } from './dto/create-project.dto';
+import { SelectPerformerDto } from './dto/select-performer.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 
 // 서비스 등록
@@ -25,13 +29,15 @@ import { Project } from './schemas/project.schema';
 
 @Controller('projects')
 export class ProjectsController {
-  constructor(private readonly projectsService: ProjectsService) {}
+  constructor(
+    private readonly projectsService: ProjectsService,
+    private readonly proposalsService: ProposalsService,
+  ) {}
 
   // 전체 프로젝트 목록 조회
   @Get()
   async findAll() {
-    const projectsList = await this.projectsService.findAll();
-    return projectsList;
+    return await this.projectsService.findAll();
   }
 
   // 프로젝트 생성
@@ -42,49 +48,104 @@ export class ProjectsController {
     @Request() req,
   ): Promise<Project> {
     if (req.user.category === 'company') {
-      const project = await this.projectsService.create(
-        req.user._id,
-        createProjectDto,
-      );
-      return project;
-    } else {
-      throw new UnauthorizedException(
-        '회사 회원만 프로젝트 생성이 가능합니다.',
-      );
+      return await this.projectsService.create(req.user._id, createProjectDto);
     }
+    throw new UnauthorizedException('회사 회원만 프로젝트 생성이 가능합니다.');
   }
 
   // 프로젝트 조회
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return await this.projectsService.findOne(id);
+  @Get(':projectId')
+  async findById(@Param('projectId') projectId: string) {
+    const project = await this.projectsService.findById(projectId);
+    if (project) {
+      return project;
+    }
+    throw new NotFoundException('존재하지 않는 프로젝트입니다.');
   }
 
   // 프로젝트 수정
   @UseGuards(AuthGuard('jwt'))
-  @Put(':id')
+  @Put(':projectId')
   async update(
-    @Param('id') id: string,
+    @Param('projectId') projectId: string,
     @Body() updateProjectDto: UpdateProjectDto,
     @Request() req,
   ) {
-    const project = await this.projectsService.findOne(id);
-    if (project.requester._id.toString() === req.user._id) {
-      return await this.projectsService.update(id, updateProjectDto);
-    } else {
-      throw new UnauthorizedException('허가되지 않은 접근입니다.');
+    const project = await this.projectsService.findById(projectId);
+    if (project.requester.toString() === req.user._id) {
+      return await this.projectsService.update(projectId, updateProjectDto);
     }
+    throw new UnauthorizedException('허가되지 않은 접근입니다.');
   }
 
   // 프로젝트 삭제
   @UseGuards(AuthGuard('jwt'))
-  @Delete(':id')
-  async delete(@Param('id') id: string, @Request() req) {
-    const project = await this.projectsService.findOne(id);
-    if (project.requester._id.toString() === req.user._id) {
-      return await this.projectsService.delete(id);
-    } else {
+  @Delete(':projectId')
+  async delete(@Param('projectId') projectId: string, @Request() req) {
+    const project = await this.projectsService.findById(projectId);
+    if (project.requester.toString() === req.user._id) {
+      return await this.projectsService.delete(projectId);
+    }
+    throw new UnauthorizedException('허가되지 않은 접근입니다.');
+  }
+
+  // 수행자 선택
+  @UseGuards(AuthGuard('jwt'))
+  @Post(':projectId/performer')
+  async selectPerformer(
+    @Param('projectId') projectId: string,
+    @Request() req,
+    @Body() selectPerformerDto: SelectPerformerDto,
+  ) {
+    const { proposalId } = selectPerformerDto;
+    const project = await this.projectsService.findById(projectId);
+    if (project) {
+      if (project.requester.toString() === req.user._id) {
+        return await this.projectsService.selectPerformer(
+          projectId,
+          proposalId,
+        );
+      }
       throw new UnauthorizedException('허가되지 않은 접근입니다.');
     }
+    throw new NotFoundException('존재하지 않는 프로젝트입니다.');
+  }
+
+  // 제안 전송
+  @UseGuards(AuthGuard('jwt'))
+  @Post(':projectId/proposals')
+  async createProposal(
+    @Param('projectId') projectId: string,
+    @Request() req,
+    @Body() createProposalDto: CreateProposalDto,
+  ) {
+    if (req.user.category === 'people') {
+      const proposal = await this.proposalsService.create(
+        projectId,
+        req.user._id,
+        createProposalDto,
+      );
+      return await this.projectsService.pushProposalToProject(
+        projectId,
+        proposal,
+      );
+    }
+    throw new UnauthorizedException('허가되지 않은 접근입니다.');
+  }
+
+  // 전체 제안 조회
+  @Get(':projectId/proposals')
+  async findAllProposals(@Param('projectId') projectId: string) {
+    return await this.proposalsService.findAll(projectId);
+  }
+
+  // 제안 조회
+  @Get(':projectId/proposals/:proposalId')
+  async findOneProposal(@Param('proposalId') proposalId: string) {
+    const proposal = await this.proposalsService.findById(proposalId);
+    if (proposal) {
+      return proposal;
+    }
+    throw new NotFoundException('존재하지 않는 제안입니다.');
   }
 }

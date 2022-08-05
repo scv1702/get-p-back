@@ -1,37 +1,32 @@
 // 라이브러리 등록
 import { Model, Types } from 'mongoose';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
 // 스키마 등록
 import { Project, ProjectDocument } from './schemas/project.schema';
+import { Proposal } from 'src/proposals/schemas/proposal.schema';
 
 // Data Transfer Object 등록
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
+import { ProposalsService } from 'src/proposals/proposals.service';
 
 @Injectable()
 export class ProjectsService {
   constructor(
     @InjectModel(Project.name) private projectModel: Model<ProjectDocument>,
+    private proposalsService: ProposalsService,
   ) {}
 
   // 전체 프로젝트 조회
-  async findAll() {
-    const projectsList = await this.projectModel.find({});
-    return projectsList;
+  async findAll(): Promise<Array<Project>> {
+    return await this.projectModel.find({});
   }
 
   // 프로젝트 조회
-  async findOne(id: string) {
-    const project = await this.projectModel.findOne({
-      _id: new Types.ObjectId(id),
-    });
-    if (project) {
-      return project;
-    } else {
-      throw new NotFoundException('존재하지 않는 프로젝트입니다.');
-    }
+  async findById(projectId: string): Promise<Project> {
+    return await this.projectModel.findById(projectId);
   }
 
   // 프로젝트 생성
@@ -49,20 +44,39 @@ export class ProjectsService {
 
   // 프로젝트 수정
   async update(
-    id: string,
+    projectId: string,
     updateProjectDto: UpdateProjectDto,
   ): Promise<Project> {
-    const updatedProject = await this.projectModel.findByIdAndUpdate(
-      new Types.ObjectId(id),
+    return await this.projectModel.findByIdAndUpdate(
+      projectId,
       updateProjectDto,
       { new: true },
     );
-    return updatedProject;
   }
 
   // 프로젝트 삭제
-  async delete(id: string) {
-    await this.projectModel.deleteOne({ _id: new Types.ObjectId(id) });
+  async delete(projectId: string) {
+    await this.projectModel.findByIdAndDelete(projectId);
     return { message: '프로젝트를 삭제했습니다.' };
+  }
+
+  // 프로젝트 수행자 선택
+  async selectPerformer(
+    projectId: string,
+    proposalId: string,
+  ): Promise<Project> {
+    const proposal = await this.proposalsService.findById(proposalId);
+    return await this.projectModel.findByIdAndUpdate(
+      projectId,
+      { performer: proposal.proponent },
+      { new: true },
+    );
+  }
+
+  // 프로젝트에 제안 추가
+  async pushProposalToProject(projectId: string, proposal: Proposal) {
+    return await this.projectModel.findByIdAndUpdate(projectId, {
+      $push: { proposals: proposal },
+    });
   }
 }
