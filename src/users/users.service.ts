@@ -28,23 +28,24 @@ export class UsersService {
   }
 
   // 특성 이메일을 가진 사용자 조회
-  async findByEmail(email: string, options: object = {}) {
-    const user = await this.userModel.findOne({ email }).select(options);
-    return user;
+  async findByEmail(email: string, options: object = {}): Promise<User> {
+    return await this.userModel.findOne({ email }).select(options);
   }
 
-  async find(options: object = {}) {
-    const users = await this.userModel.find(options);
-    return users;
+  async find(options: object = {}): Promise<Array<User>> {
+    return await this.userModel.find(options);
   }
 
   // 회원가입 요청 처리
-  async signUp(email: string, password: string, category: string) {
+  async signUp(
+    email: string,
+    password: string,
+    category: string,
+  ): Promise<User> {
     const user = await this.findByEmail(email);
     if (!user) {
-      const createdUser = await this._signUp(email, password, category);
       // this.emailService.send(email);
-      return createdUser;
+      return await this._signUp(email, password, category);
     }
     throw new ForbiddenException(
       '이미 가입된 이메일 입니다. 다른 이메일을 입력해주세요.',
@@ -55,6 +56,15 @@ export class UsersService {
   async create(user: any): Promise<User> {
     const createdUser = new this.userModel(user);
     return createdUser.save();
+  }
+
+  // 이메일 검증
+  async verify(userId: string) {
+    await this.userModel.findByIdAndUpdate(
+      userId,
+      { verify: true },
+      { new: true },
+    );
   }
 
   // 회원가입

@@ -74,9 +74,14 @@ export class ProjectsService {
   }
 
   // 프로젝트에 제안 추가
-  async pushProposalToProject(projectId: string, proposal: Proposal) {
-    return await this.projectModel.findByIdAndUpdate(projectId, {
-      $push: { proposals: proposal },
-    });
+  async pushProposalToProject(
+    projectId: string,
+    proposal: Proposal,
+  ): Promise<Project> {
+    return await this.projectModel.findByIdAndUpdate(
+      projectId,
+      { $push: { proposals: proposal } },
+      { new: true },
+    );
   }
 }
