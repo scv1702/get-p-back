@@ -1,5 +1,5 @@
 // 라이브러리 등록
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { pbkdf2Sync } from 'crypto';
 

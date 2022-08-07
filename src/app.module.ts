@@ -13,7 +13,6 @@ import { AppService } from './app.service';
 import { PeopleModule } from './people/people.module';
 import { CompanyModule } from './company/company.module';
 import { ProjectsModule } from './projects/projects.module';
-import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -21,7 +20,6 @@ import { AuthModule } from './auth/auth.module';
       isGlobal: true,
     }),
     MongooseModule.forRoot(process.env.DB_URI),
-    AuthModule,
     PeopleModule,
     CompanyModule,
     ProjectsModule,

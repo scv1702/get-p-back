@@ -23,8 +23,7 @@ export class UsersService {
 
   // 전체 사용자 조회
   async findAll(): Promise<Array<User>> {
-    const users = await this.userModel.find({});
-    return users;
+    return await this.userModel.find({});
   }
 
   // 특성 이메일을 가진 사용자 조회
@@ -32,6 +31,7 @@ export class UsersService {
     return await this.userModel.findOne({ email }).select(options);
   }
 
+  // 사용자 조회
   async find(options: object = {}): Promise<Array<User>> {
     return await this.userModel.find(options);
   }
@@ -101,5 +101,10 @@ export class UsersService {
         );
       });
     });
+  }
+
+  // 사용자 탈퇴
+  async delete(userID: string) {
+    await this.userModel.findByIdAndRemove(userID);
   }
 }

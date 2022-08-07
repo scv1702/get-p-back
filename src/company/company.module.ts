@@ -13,11 +13,13 @@ import { CompanyController } from './company.controller';
 
 // 스키마 등록
 import { Company, CompanySchema } from './schemas/company.schema';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Company.name, schema: CompanySchema }]),
     UsersModule,
+    AuthModule,
   ],
   controllers: [CompanyController],
   providers: [CompanyService],

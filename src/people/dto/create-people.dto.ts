@@ -1,36 +1,57 @@
 // 라이브러리 등록
+import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
 
 export class CreatePeopleDto {
-  // 출신 학교
+  @ApiProperty({
+    description: '출신 학교',
+  })
   @IsString()
   school: string;
 
-  // 전공
+  @ApiProperty({
+    description: '전공',
+  })
+  @ApiProperty()
   @IsString()
   major: string;
 
-  // 활동 지역
+  @ApiProperty({
+    description: '활동 지역',
+  })
   @IsString()
   activityArea: string;
 
-  // 자기 소개
+  @ApiProperty({
+    description: '자기 소개',
+  })
   @IsString()
-  description: string;
+  introduction: string;
 
-  // 포트폴리오
+  @ApiProperty({
+    description: '포트폴리오',
+  })
   @IsString()
   portfolio: string;
 
-  // 휴대폰 번호
+  @ApiProperty({
+    description: '휴대폰 번호',
+  })
+  @ApiProperty()
   @IsString()
   phoneNumber: string;
 
-  // 이메일
+  @ApiProperty({
+    description: '이메일',
+  })
+  @ApiProperty()
   @IsString()
   email: string;
 
-  // 비밀번호
+  @ApiProperty({
+    description: '비밀번호',
+  })
+  @ApiProperty()
   @IsString()
   password: string;
 }

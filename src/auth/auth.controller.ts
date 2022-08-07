@@ -9,11 +9,13 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiTags } from '@nestjs/swagger';
 
 // 서비스 등록
 import { AuthService } from './auth.service';
 import { EmailService } from 'src/email/email.service';
 
+@ApiTags('인증')
 @Controller('auth')
 export class AuthController {
   constructor(

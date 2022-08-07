@@ -57,7 +57,6 @@ export class ProjectsService {
   // 프로젝트 삭제
   async delete(projectId: string) {
     await this.projectModel.findByIdAndDelete(projectId);
-    return { message: '프로젝트를 삭제했습니다.' };
   }
 
   // 프로젝트 수행자 선택

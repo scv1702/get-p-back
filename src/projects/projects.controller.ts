@@ -9,10 +9,11 @@ import {
   Put,
   Delete,
   Request,
-  UnauthorizedException,
+  ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiTags } from '@nestjs/swagger';
 import { CreateProposalDto } from 'src/proposals/dto/create-proposal.dto';
 import { ProposalsService } from 'src/proposals/proposals.service';
 
@@ -27,6 +28,7 @@ import { ProjectsService } from './projects.service';
 // 스키마 등록
 import { Project } from './schemas/project.schema';
 
+@ApiTags('프로젝트')
 @Controller('projects')
 export class ProjectsController {
   constructor(
@@ -50,9 +52,7 @@ export class ProjectsController {
     if (req.user.category === 'company') {
       return await this.projectsService.create(req.user._id, createProjectDto);
     }
-    throw new UnauthorizedException(
-      '회사 회원만 프로젝트를 등록할 수 있습니다.',
-    );
+    throw new ForbiddenException('회사 회원만 프로젝트를 등록할 수 있습니다.');
   }
 
   // 프로젝트 조회
@@ -77,7 +77,7 @@ export class ProjectsController {
     if (project.requester.toString() === req.user._id) {
       return await this.projectsService.update(projectId, updateProjectDto);
     }
-    throw new UnauthorizedException('허가되지 않은 접근입니다.');
+    throw new ForbiddenException('허가되지 않은 접근입니다.');
   }
 
   // 프로젝트 삭제
@@ -86,9 +86,10 @@ export class ProjectsController {
   async delete(@Param('projectId') projectId: string, @Request() req) {
     const project = await this.projectsService.findById(projectId);
     if (project.requester.toString() === req.user._id) {
-      return await this.projectsService.delete(projectId);
+      await this.projectsService.delete(projectId);
+      return { message: '프로젝트를 삭제했습니다.' };
     }
-    throw new UnauthorizedException('허가되지 않은 접근입니다.');
+    throw new ForbiddenException('허가되지 않은 접근입니다.');
   }
 
   // 수행자 선택
@@ -108,7 +109,7 @@ export class ProjectsController {
           proposalId,
         );
       }
-      throw new UnauthorizedException('허가되지 않은 접근입니다.');
+      throw new ForbiddenException('허가되지 않은 접근입니다.');
     }
     throw new NotFoundException('존재하지 않는 프로젝트입니다.');
   }
@@ -132,7 +133,7 @@ export class ProjectsController {
         proposal,
       );
     }
-    throw new UnauthorizedException('허가되지 않은 접근입니다.');
+    throw new ForbiddenException('허가되지 않은 접근입니다.');
   }
 
   // 전체 제안 조회
