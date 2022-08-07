@@ -36,7 +36,7 @@ export class People {
 
   // 자기 소개
   @Prop()
-  description: string;
+  introduction: string;
 
   // 포트폴리오
   @Prop()

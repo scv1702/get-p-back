@@ -1,8 +1,11 @@
 // 라이브러리 등록
 import { IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateCompanyDto {
-  // 기업명
+  @ApiProperty({
+    description: '회사명',
+  })
   @IsString()
   name: string;
 
@@ -10,35 +13,51 @@ export class CreateCompanyDto {
   // @IsString()
   // companyImage: string;
 
-  // 업종
+  @ApiProperty({
+    description: '업종',
+  })
   @IsString()
   industry: string;
 
-  // 대표자
+  @ApiProperty({
+    description: '대표자',
+  })
   @IsString()
   ceo: string;
 
-  // 기업 소개
+  @ApiProperty({
+    description: '소개 및 설명',
+  })
   @IsString()
-  description: string;
+  introduction: string;
 
-  // 대표 전화
+  @ApiProperty({
+    description: '대표자 전화번호',
+  })
   @IsString()
   phoneNumber: string;
 
-  // 웹 사이트
+  @ApiProperty({
+    description: '웹사이트 주소',
+  })
   @IsString()
   url: string;
 
-  // 기업 주소
+  @ApiProperty({
+    description: '회사 주소',
+  })
   @IsString()
   address: string;
 
-  // 이메일
+  @ApiProperty({
+    description: '이메일',
+  })
   @IsString()
   email: string;
 
-  // 비밀번호
+  @ApiProperty({
+    description: '비밀번호',
+  })
   @IsString()
   password: string;
 }

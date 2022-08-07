@@ -45,7 +45,7 @@ export class Project {
 
   // 프로젝트 상세 설명
   @Prop({ required: true })
-  description: string;
+  introduction: string;
 
   // 첨부 파일 (첨부 파일 URL)
   @Prop()

@@ -1,7 +1,10 @@
-import { IsString, IsNumber } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsString } from 'class-validator';
 
 export class SelectPerformerDto {
-  // 프로젝트 미팅 방식. 온라인: 0, 오프라인: 1
+  @ApiProperty({
+    description: '제안 ObjectId',
+  })
   @IsString()
   proposalId: string;
 }

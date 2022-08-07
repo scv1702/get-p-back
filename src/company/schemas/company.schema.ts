@@ -29,7 +29,7 @@ export class Company {
 
   // 기업 소개
   @Prop()
-  description: string;
+  introduction: string;
 
   // 대표 전화
   @Prop({ required: true })

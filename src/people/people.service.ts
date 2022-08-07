@@ -1,5 +1,5 @@
 // 라이브러리 등록
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
@@ -11,6 +11,7 @@ import { CreatePeopleDto } from './dto/create-people.dto';
 
 // 서비스 등록
 import { UsersService } from 'src/users/users.service';
+import { UpdatePeopleDto } from './dto/update-people.dto';
 
 @Injectable()
 export class PeopleService {
@@ -19,12 +20,13 @@ export class PeopleService {
     private readonly usersService: UsersService,
   ) {}
 
+  // 피플 도큐먼트 생성
   async create(people): Promise<People> {
     const createdPeople = new this.peopleModel(people);
     return createdPeople.save();
   }
 
-  // 피플 회원가입
+  // 피플 회원 가입
   async signUp(createPeopleDto: CreatePeopleDto): Promise<People> {
     const { email, password, ...remainder } = createPeopleDto;
     const user = await this.usersService.signUp(email, password, 'people');
@@ -34,8 +36,29 @@ export class PeopleService {
     });
   }
 
+  // 피플 조회
+  async findOne(peopleId: string): Promise<People> {
+    return await this.peopleModel.findById(peopleId);
+  }
+
   // 전체 피플 목록 조회
   async findAll(): Promise<Array<People>> {
     return await this.peopleModel.find({});
+  }
+
+  // 피플 회원 탈퇴
+  async delete(peopleId: string, userId: string) {
+    await this.peopleModel.findByIdAndRemove(peopleId);
+    await this.usersService.delete(userId);
+  }
+
+  // 피플 화원 정보 수정
+  async update(
+    peopleId: string,
+    updatePeopleDto: UpdatePeopleDto,
+  ): Promise<People> {
+    return await this.peopleModel.findByIdAndUpdate(peopleId, updatePeopleDto, {
+      new: true,
+    });
   }
 }
