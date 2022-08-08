@@ -19,10 +19,12 @@ cd get-p-back
 npm install
 ```
 
-3. `npm start`을 통해 `get-p-back`을 실행시킨다.
+3. 환경변수 파일(`.env`)을 디렉토리에 추가한다. 환경변수 파일은 슬랙의 #개발에 업로드되어 있다.
+
+4. `npm start`을 통해 `get-p-back`을 실행시킨다.
 
 ```bash
 npm start
 ```
 
-4. `http://localhost:8080/api`로 접속하면 API 문서 열람 및 테스팅을 할 수 있다.
+5. `http://localhost:8080/api`로 접속하면 API 문서 열람 및 테스팅을 할 수 있다.
