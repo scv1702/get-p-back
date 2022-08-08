@@ -27,6 +27,13 @@ export class CreateProjectDto {
   category: string;
 
   @ApiProperty({
+    description:
+      '프로젝트 분야. IT/프로그래밍, 영상/사진/음악, 마케팅/기획, 디자인, 번역/통역, 문서/글쓰기, 기타',
+  })
+  @IsString()
+  field: string;
+
+  @ApiProperty({
     description: '프로젝트 제목',
   })
   @IsString()

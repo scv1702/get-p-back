@@ -39,6 +39,19 @@ export class Project {
   @Prop({ required: true })
   category: string;
 
+  /*
+   * 프로젝트 분야
+   * IT/프로그래밍
+   * 영상/사진/음악
+   * 마케팅/기획
+   * 디자인
+   * 번역/통역
+   * 문서/글쓰기
+   * 기타
+   */
+  @Prop({ required: true })
+  field: string;
+
   // 프로젝트 제목
   @Prop({ required: true })
   title: string;
