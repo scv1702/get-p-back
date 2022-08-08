@@ -10,18 +10,33 @@ import { Proposal } from 'src/proposals/schemas/proposal.schema';
 // Data Transfer Object 등록
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
+
+// 서비스 등록
 import { ProposalsService } from 'src/proposals/proposals.service';
+import { CompanyService } from 'src/company/company.service';
 
 @Injectable()
 export class ProjectsService {
   constructor(
     @InjectModel(Project.name) private projectModel: Model<ProjectDocument>,
     private proposalsService: ProposalsService,
+    private companyService: CompanyService,
   ) {}
 
   // 전체 프로젝트 조회
-  async findAll(): Promise<Array<Project>> {
-    return await this.projectModel.find({});
+  async findAll() {
+    const result = await this.projectModel.find({});
+    const projects = await Promise.all(
+      result.map(async (project: any) => {
+        const company = await this.companyService.findOne({
+          userObjectId: project.requester,
+        });
+        return { ...project, company: company.name };
+      }),
+    );
+    return projects.map((project) => {
+      return { ...project._doc, company: project.company };
+    });
   }
 
   // 프로젝트 조회

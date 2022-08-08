@@ -68,7 +68,7 @@ export class CompanyController {
   @UseGuards(AuthGuard('jwt'))
   @Delete(':companyId')
   async delete(@Param('companyId') companyId: string, @Request() req) {
-    const company = await this.companyService.findOne(companyId);
+    const company = await this.companyService.findOne({ _id: companyId });
     if (company.userObjectId.toString() === req.user._id) {
       await this.companyService.delete(company._id.toString(), req.user._id);
       return { message: 'Get-P 회원 탈퇴가 완료되었습니다.' };
@@ -95,7 +95,7 @@ export class CompanyController {
     @Body() updateCompanyDto: UpdateCompanyDto,
     @Request() req,
   ): Promise<Company> {
-    const company = await this.companyService.findOne(companyId);
+    const company = await this.companyService.findOne({ _id: companyId });
     if (company.userObjectId.toString() === req.user._id) {
       return await this.companyService.update(
         company._id.toString(),

@@ -1,5 +1,5 @@
 // 라이브러리 등록
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { pbkdf2Sync } from 'crypto';
 
@@ -26,7 +26,7 @@ export class AuthService {
       const findedUser = await this.usersService.find({
         email,
         password: key.toString('base64'),
-      });
+      })[0];
       if (findedUser) {
         return findedUser;
       }

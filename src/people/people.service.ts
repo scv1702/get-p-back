@@ -52,6 +52,11 @@ export class PeopleService {
     await this.usersService.delete(userId);
   }
 
+  // 회사 조회
+  async find(options: object = {}): Promise<Array<People>> {
+    return await this.peopleModel.find(options);
+  }
+
   // 피플 화원 정보 수정
   async update(
     peopleId: string,
