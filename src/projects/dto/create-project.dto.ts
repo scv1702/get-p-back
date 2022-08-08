@@ -14,6 +14,13 @@ export class CreateProjectDto {
   @IsNumber()
   successPay: number;
 
+  // 프로젝트 위치
+  @ApiProperty({
+    description: '프로젝트 위치',
+  })
+  @IsString()
+  location: string;
+
   @ApiProperty({
     description: '실패 보증금',
   })
@@ -73,5 +80,5 @@ export class CreateProjectDto {
     description: '프로젝트 태그(최대 8개)',
   })
   @IsString({ each: true })
-  tag: [string];
+  tags: [string];
 }

@@ -15,6 +15,14 @@ export class Project {
   @Prop({ type: Types.ObjectId, ref: 'Company', required: true })
   requester: Company;
 
+  // 프로젝트 위치
+  @Prop({ required: true })
+  location: string;
+
+  // 추천 수
+  @Prop({ default: 0 })
+  likes: number;
+
   // 받은 제안 리스트
   @Prop({ type: [Types.ObjectId], ref: 'Proposal' })
   proposals: [Proposal];
@@ -78,7 +86,7 @@ export class Project {
 
   // 프로젝트 태그 (최대 8개)
   @Prop({ required: true })
-  tag: [string];
+  tags: [string];
 
   @Prop({ default: Date.now })
   createdAt: Date;
