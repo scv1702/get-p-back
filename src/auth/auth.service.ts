@@ -20,10 +20,10 @@ export class AuthService {
 
   // 이메일 및 비밀번호 유효성 검사
   async validateUser(email: string, password: string) {
-    const user = await this.usersService.findByEmail(email, { salt: 1 });
+    const user = await this.usersService.findOne({ email }, { salt: 1 });
     if (user) {
       const key = pbkdf2Sync(password, user.salt, 100000, 64, 'sha512');
-      const findedUser = await this.usersService.find({
+      const findedUser = await this.usersService.findOne({
         email,
         password: key.toString('base64'),
       })[0];

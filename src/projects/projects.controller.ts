@@ -58,7 +58,7 @@ export class ProjectsController {
   // 프로젝트 조회
   @Get(':projectId')
   async findById(@Param('projectId') projectId: string) {
-    const project = await this.projectsService.findById(projectId);
+    const project = await this.projectsService.findOne({ _id: projectId });
     if (project) {
       return project;
     }
@@ -73,7 +73,7 @@ export class ProjectsController {
     @Body() updateProjectDto: UpdateProjectDto,
     @Request() req,
   ) {
-    const project = await this.projectsService.findById(projectId);
+    const project = await this.projectsService.findOne({ _id: projectId });
     if (project.requester.toString() === req.user._id) {
       return await this.projectsService.update(projectId, updateProjectDto);
     }
@@ -84,7 +84,7 @@ export class ProjectsController {
   @UseGuards(AuthGuard('jwt'))
   @Delete(':projectId')
   async delete(@Param('projectId') projectId: string, @Request() req) {
-    const project = await this.projectsService.findById(projectId);
+    const project = await this.projectsService.findOne({ _id: projectId });
     if (project.requester.toString() === req.user._id) {
       await this.projectsService.delete(projectId);
       return { message: '프로젝트를 삭제했습니다.' };
@@ -101,7 +101,7 @@ export class ProjectsController {
     @Body() selectPerformerDto: SelectPerformerDto,
   ) {
     const { proposalId } = selectPerformerDto;
-    const project = await this.projectsService.findById(projectId);
+    const project = await this.projectsService.findOne({ _id: projectId });
     if (project) {
       if (project.requester.toString() === req.user._id) {
         return await this.projectsService.selectPerformer(
@@ -145,7 +145,7 @@ export class ProjectsController {
   // 제안 조회
   @Get(':projectId/proposals/:proposalId')
   async findOneProposal(@Param('proposalId') proposalId: string) {
-    const proposal = await this.proposalsService.findById(proposalId);
+    const proposal = await this.proposalsService.findOne({ _id: proposalId });
     if (proposal) {
       return proposal;
     }

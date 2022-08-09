@@ -26,14 +26,9 @@ export class UsersService {
     return await this.userModel.find({});
   }
 
-  // 특성 이메일을 가진 사용자 조회
-  async findByEmail(email: string, options: object = {}): Promise<User> {
-    return await this.userModel.findOne({ email }).select(options);
-  }
-
   // 사용자 조회
-  async find(options: object = {}): Promise<Array<User>> {
-    return await this.userModel.find(options);
+  async findOne(queries: object = {}, options: object = {}): Promise<User> {
+    return await this.userModel.findOne(queries).select(options);
   }
 
   // 회원가입 요청 처리
@@ -42,7 +37,7 @@ export class UsersService {
     password: string,
     category: string,
   ): Promise<User> {
-    const user = await this.findByEmail(email);
+    const user = await this.findOne({ email });
     if (!user) {
       // this.emailService.send(email);
       return await this._signUp(email, password, category);

@@ -4,6 +4,12 @@ import { IsString } from 'class-validator';
 
 export class CreatePeopleDto {
   @ApiProperty({
+    description: '이름',
+  })
+  @IsString()
+  name: string;
+
+  @ApiProperty({
     description: '출신 학교',
   })
   @IsString()
@@ -54,4 +60,10 @@ export class CreatePeopleDto {
   @ApiProperty()
   @IsString()
   password: string;
+
+  @ApiProperty({
+    description: '태그(최대 8개)',
+  })
+  @IsString({ each: true })
+  tags: [string];
 }

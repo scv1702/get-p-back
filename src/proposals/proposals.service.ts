@@ -35,7 +35,7 @@ export class ProposalsService {
   }
 
   // 제안 조회
-  async findById(proposalId: string): Promise<Proposal> {
-    return await this.proposalModel.findById(proposalId);
+  async findOne(queries: object = {}): Promise<Proposal> {
+    return await this.proposalModel.findOne(queries);
   }
 }

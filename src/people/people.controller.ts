@@ -44,6 +44,13 @@ export class PeopleController {
     return await this.peopleService.findAll();
   }
 
+  // 피플 조회
+  @ApiOkResponse({ description: '피플을 반환합니다.' })
+  @Get(':peopleId')
+  async findOne(@Param('peopleId') peopleId: string): Promise<People> {
+    return await this.peopleService.findOne({ _id: peopleId });
+  }
+
   // 피플 회원 가입
   @ApiCreatedResponse({
     description: 'Get-P 피플로 회원 가입이 완료되었습니다.',
@@ -67,7 +74,7 @@ export class PeopleController {
   @UseGuards(AuthGuard('jwt'))
   @Delete(':peopleId')
   async delete(@Param('peopleId') peopleId: string, @Request() req) {
-    const people = await this.peopleService.findOne(peopleId);
+    const people = await this.peopleService.findOne({ _id: peopleId });
     if (people.userObjectId.toString() === req.user._id) {
       await this.peopleService.delete(people._id.toString(), req.user._id);
       return { message: 'Get-P 회원 탈퇴가 완료되었습니다.' };
@@ -93,7 +100,7 @@ export class PeopleController {
     @Body() updatePeopleDto: UpdatePeopleDto,
     @Request() req,
   ) {
-    const people = await this.peopleService.findOne(peopleId);
+    const people = await this.peopleService.findOne({ _id: peopleId });
     if (people.userObjectId.toString() === req.user._id) {
       await this.peopleService.update(people._id.toString(), updatePeopleDto);
       return { message: '회원 정보가 수정되었습니다.' };

@@ -25,23 +25,27 @@ export class ProjectsService {
 
   // 전체 프로젝트 조회
   async findAll() {
-    const result = await this.projectModel.find({});
-    const projects = await Promise.all(
-      result.map(async (project: any) => {
+    const projects = await this.projectModel.find({});
+    const pendedProjects = await Promise.all(
+      projects.map(async (project: any) => {
         const company = await this.companyService.findOne({
           userObjectId: project.requester,
         });
-        return { ...project, company: company.name };
+        return { ...project, company };
       }),
     );
-    return projects.map((project) => {
+    return pendedProjects.map((project) => {
       return { ...project._doc, company: project.company };
     });
   }
 
   // 프로젝트 조회
-  async findById(projectId: string): Promise<Project> {
-    return await this.projectModel.findById(projectId);
+  async findOne(queries: object = {}) {
+    const project: any = await this.projectModel.findOne(queries);
+    const company = await this.companyService.findOne({
+      userObjectId: project.requester,
+    });
+    return { ...project._doc, company };
   }
 
   // 프로젝트 생성
@@ -79,7 +83,7 @@ export class ProjectsService {
     projectId: string,
     proposalId: string,
   ): Promise<Project> {
-    const proposal = await this.proposalsService.findById(proposalId);
+    const proposal = await this.proposalsService.findOne({ _id: proposalId });
     return await this.projectModel.findByIdAndUpdate(
       projectId,
       { performer: proposal.proponent },

@@ -42,8 +42,8 @@ export class CompanyService {
   }
 
   // 회사 조회
-  async findOne(options: object = {}): Promise<Company> {
-    return await this.companyModel.findOne(options);
+  async findOne(queries: object = {}): Promise<Company> {
+    return await this.companyModel.findOne(queries);
   }
 
   // 회사 회원 탈퇴

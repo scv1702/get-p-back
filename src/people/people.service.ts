@@ -37,8 +37,8 @@ export class PeopleService {
   }
 
   // 피플 조회
-  async findOne(peopleId: string): Promise<People> {
-    return await this.peopleModel.findById(peopleId);
+  async findOne(queries: object = {}): Promise<People> {
+    return await this.peopleModel.findOne(queries);
   }
 
   // 전체 피플 목록 조회
