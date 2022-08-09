@@ -26,7 +26,7 @@ export class AuthService {
       const findedUser = await this.usersService.findOne({
         email,
         password: key.toString('base64'),
-      })[0];
+      });
       if (findedUser) {
         return findedUser;
       }
