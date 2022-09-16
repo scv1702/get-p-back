@@ -50,7 +50,10 @@ export class ProjectsController {
     @Request() req,
   ): Promise<Project> {
     if (req.user.category === 'company') {
-      return await this.projectsService.create(req.user._id, createProjectDto);
+      return await this.projectsService.create(
+        req.user.companyObjectId,
+        createProjectDto,
+      );
     }
     throw new ForbiddenException('회사 회원만 프로젝트를 등록할 수 있습니다.');
   }
@@ -74,7 +77,7 @@ export class ProjectsController {
     @Request() req,
   ) {
     const project = await this.projectsService.findOne({ _id: projectId });
-    if (project.requester.toString() === req.user._id) {
+    if (project.company.toString() === req.user.companyObjectId) {
       return await this.projectsService.update(projectId, updateProjectDto);
     }
     throw new ForbiddenException('허가되지 않은 접근입니다.');
@@ -85,7 +88,7 @@ export class ProjectsController {
   @Delete(':projectId')
   async delete(@Param('projectId') projectId: string, @Request() req) {
     const project = await this.projectsService.findOne({ _id: projectId });
-    if (project.requester.toString() === req.user._id) {
+    if (project.company.toString() === req.user.companyObjectId) {
       await this.projectsService.delete(projectId);
       return { message: '프로젝트를 삭제했습니다.' };
     }
@@ -103,7 +106,7 @@ export class ProjectsController {
     const { proposalId } = selectPerformerDto;
     const project = await this.projectsService.findOne({ _id: projectId });
     if (project) {
-      if (project.requester.toString() === req.user._id) {
+      if (project.company.toString() === req.user.companyObjectId) {
         return await this.projectsService.selectPerformer(
           projectId,
           proposalId,
@@ -125,7 +128,7 @@ export class ProjectsController {
     if (req.user.category === 'people') {
       const proposal = await this.proposalsService.create(
         projectId,
-        req.user._id,
+        req.user.peopleObjectId,
         createProposalDto,
       );
       return await this.projectsService.pushProposalToProject(

@@ -29,7 +29,7 @@ export class ProjectsService {
     const pendedProjects = await Promise.all(
       projects.map(async (project: any) => {
         const company = await this.companyService.findOne({
-          userObjectId: project.requester,
+          _id: project.company,
         });
         return { ...project, company };
       }),
@@ -48,18 +48,18 @@ export class ProjectsService {
   async findOne(queries: object = {}) {
     const project: any = await this.projectModel.findOne(queries);
     const company = await this.companyService.findOne({
-      userObjectId: project.requester,
+      _id: project.company,
     });
     return { ...project._doc, company };
   }
 
   // 프로젝트 생성
   async create(
-    requester: string,
+    companyObjectId: string,
     createProjectDto: CreateProjectDto,
   ): Promise<Project> {
     const project = {
-      requester: new Types.ObjectId(requester),
+      company: new Types.ObjectId(companyObjectId),
       ...createProjectDto,
     };
     const createdProject = new this.projectModel(project);

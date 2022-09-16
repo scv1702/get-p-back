@@ -36,11 +36,23 @@ export class AuthService {
 
   // JWT 발급
   async login(user: User) {
-    const payload = {
-      _id: user._id,
-      email: user.email,
-      category: user.category,
-    };
+    let payload;
+    if (user.companyObjectId) {
+      payload = {
+        _id: user._id,
+        companyObjectId: user.companyObjectId,
+        email: user.email,
+        category: user.category,
+      };
+    }
+    if (user.peopleObjectId) {
+      payload = {
+        _id: user._id,
+        peopleObjectId: user.peopleObjectId,
+        email: user.email,
+        category: user.category,
+      };
+    }
     return {
       accessToken: this.jwtService.sign(payload, {
         secret: process.env.JWT_SECRET,
