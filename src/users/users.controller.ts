@@ -16,7 +16,6 @@ import {
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiNoContentResponse,
-  ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
 
@@ -65,24 +64,19 @@ export class UsersController {
   @ApiForbiddenResponse({
     description: '허가되지 않은 접근입니다.',
   })
-  @ApiParam({
-    description: '사용자 ObjectId',
-    name: 'userId',
-  })
   @UseGuards(AuthGuard('jwt'))
-  @Delete(':userId')
-  async delete(@Param('userId') userId: string, @Req() req) {
+  @Delete()
+  async delete(@Req() req) {
+    const userId = req.user._id;
     const user = await this.usersService.findOne({ _id: userId });
-    if (user._id === req.user._id) {
-      await this.usersService.delete(userId);
-      if (user.category === 'people') {
-        await this.peopleService.delete(user.peopleObjectId.toString());
-        return { message: 'Get-P 회원 탈퇴가 완료되었습니다.' };
-      }
-      if (user.category === 'company') {
-        await this.companyService.delete(user.companyObjectId.toString());
-        return { message: 'Get-P 회원 탈퇴가 완료되었습니다.' };
-      }
+    await this.usersService.delete(userId);
+    if (user.category === 'people') {
+      await this.peopleService.delete(user.peopleObjectId.toString());
+      return { message: 'Get-P 회원 탈퇴가 완료되었습니다.' };
+    }
+    if (user.category === 'company') {
+      await this.companyService.delete(user.companyObjectId.toString());
+      return { message: 'Get-P 회원 탈퇴가 완료되었습니다.' };
     }
     throw new ForbiddenException('허가되지 않은 접근입니다.');
   }
@@ -92,12 +86,10 @@ export class UsersController {
     description: '프로필 사진이 등록되었습니다.',
   })
   @UseGuards(AuthGuard('jwt'))
-  @Post(':userId/image')
+  @Post('image')
   @UseInterceptors(FileInterceptor('image', storage()))
-  async uploadImage(
-    @Param('userId') userId: string,
-    @UploadedFile() image: Express.Multer.File,
-  ) {
+  async uploadImage(@Req() req, @UploadedFile() image: Express.Multer.File) {
+    const userId = req.user._id;
     const user = await this.usersService.findOne({ _id: userId });
     if (user.category === 'people' && user.peopleObjectId) {
       await this.peopleService.uploadImage(

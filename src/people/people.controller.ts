@@ -8,6 +8,7 @@ import {
   UseGuards,
   Param,
   ForbiddenException,
+  Req,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
@@ -15,7 +16,6 @@ import {
   ApiForbiddenResponse,
   ApiNoContentResponse,
   ApiOkResponse,
-  ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
 
@@ -57,11 +57,12 @@ export class PeopleController {
     description: 'Get-P 피플로 등록이 완료되었습니다.',
   })
   @UseGuards(AuthGuard('jwt'))
-  @Post(':userId')
+  @Post()
   async signUp(
-    @Param('userId') userId: string,
+    @Req() req,
     @Body() createPeopleDto: CreatePeopleDto,
   ): Promise<People> {
+    const userId = req.user._id;
     const user = await this.usersService.findOne({ _id: userId });
     if (!user.category && !user.peopleObjectId) {
       return await this.peopleService.signUp(userId, createPeopleDto);
@@ -70,28 +71,21 @@ export class PeopleController {
 
   // 피플 회원 정보 수정
   @ApiNoContentResponse({
-    description: '회원 정보가 수정되었습니다.',
+    description: '피플 정보가 수정되었습니다.',
   })
   @ApiForbiddenResponse({
     description: '허가되지 않은 접근입니다.',
   })
-  @ApiParam({
-    description: '피플 ObjectId',
-    name: 'peopleId',
-  })
   @UseGuards(AuthGuard('jwt'))
-  @Put(':peopleId')
-  async update(
-    @Param('peopleId') peopleId: string,
-    @Body() updatePeopleDto: UpdatePeopleDto,
-  ) {
-    const user = await this.usersService.findOne({ peopleObjectId: peopleId });
+  @Put()
+  async update(@Req() req, @Body() updatePeopleDto: UpdatePeopleDto) {
+    const userId = req.user._id;
+    const user = await this.usersService.findOne({ _id: userId });
     if (user.peopleObjectId) {
-      await this.peopleService.update(
+      return await this.peopleService.update(
         user.peopleObjectId.toString(),
         updatePeopleDto,
       );
-      return { message: '회원 정보가 수정되었습니다.' };
     }
     throw new ForbiddenException('허가되지 않은 접근입니다.');
   }

@@ -5,9 +5,9 @@ import {
   ForbiddenException,
   Get,
   Post,
-  Param,
   UseGuards,
   Put,
+  Req,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
@@ -16,7 +16,6 @@ import {
   ApiForbiddenResponse,
   ApiNoContentResponse,
   ApiOkResponse,
-  ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
 
@@ -51,11 +50,12 @@ export class CompanyController {
     description: 'Get-P 회사로 등록이 완료되었습니다.',
   })
   @UseGuards(AuthGuard('jwt'))
-  @Post(':userId')
+  @Post()
   async signUp(
-    @Param('userId') userId: string,
     @Body() createCompanyDto: CreateCompanyDto,
+    @Req() req,
   ): Promise<Company> {
+    const userId = req.user._id;
     const user = await this.usersService.findOne({ _id: userId });
     if (!user.category && !user.companyObjectId) {
       return await this.companyService.signUp(userId, createCompanyDto);
@@ -69,20 +69,15 @@ export class CompanyController {
   @ApiForbiddenResponse({
     description: '허가되지 않은 접근입니다.',
   })
-  @ApiParam({
-    description: '회사 ObjectId',
-    name: 'companyId',
-  })
   @UseGuards(AuthGuard('jwt'))
-  @Put(':companyId')
+  @Put()
   @ApiBody({ type: UpdateCompanyDto })
   async update(
-    @Param('companyId') companyId: string,
     @Body() updateCompanyDto: UpdateCompanyDto,
+    @Req() req,
   ): Promise<Company> {
-    const user = await this.usersService.findOne({
-      companyObjectId: companyId,
-    });
+    const userId = req.user._id;
+    const user = await this.usersService.findOne({ _id: userId });
     if (user.companyObjectId) {
       return await this.companyService.update(
         user.companyObjectId.toString(),
