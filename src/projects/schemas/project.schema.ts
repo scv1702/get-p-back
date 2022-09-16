@@ -31,9 +31,9 @@ export class Project {
   @Prop({ type: Types.ObjectId, ref: 'People' })
   performer: People;
 
-  // 프로젝트 미팅 방식. 온라인: 0, 오프라인: 1
+  // 프로젝트 미팅 방식
   @Prop({ required: true })
-  meeting: number;
+  meeting: string;
 
   // 성공 보수
   @Prop({ required: true })

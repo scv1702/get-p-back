@@ -3,10 +3,10 @@ import { IsString, IsNumber } from 'class-validator';
 
 export class CreateProjectDto {
   @ApiProperty({
-    description: '프로젝트 미팅 방식. 온라인: 0, 오프라인: 1',
+    description: '프로젝트 미팅 방식',
   })
   @IsNumber()
-  meeting: number;
+  meeting: string;
 
   @ApiProperty({
     description: '성공 보수',
