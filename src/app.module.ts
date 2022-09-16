@@ -13,6 +13,7 @@ import { AppService } from './app.service';
 import { PeopleModule } from './people/people.module';
 import { CompanyModule } from './company/company.module';
 import { ProjectsModule } from './projects/projects.module';
+import { HashtagModule } from './hashtag/hashtag.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ProjectsModule } from './projects/projects.module';
     PeopleModule,
     CompanyModule,
     ProjectsModule,
+    HashtagModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -66,4 +66,13 @@ export class PeopleService {
       new: true,
     });
   }
+
+  // 피플 프로필 사진 등록
+  async uploadImage(peopleId: string, image: Express.Multer.File) {
+    return await this.peopleModel.findByIdAndUpdate(
+      peopleId,
+      { image: image.filename },
+      { new: true },
+    );
+  }
 }
