@@ -37,21 +37,28 @@ export class AuthService {
   // JWT 발급
   async login(user: User) {
     let payload;
-    if (user.companyObjectId) {
+    if (!user.category) {
       payload = {
         _id: user._id,
-        companyObjectId: user.companyObjectId,
         email: user.email,
-        category: user.category,
       };
-    }
-    if (user.peopleObjectId) {
-      payload = {
-        _id: user._id,
-        peopleObjectId: user.peopleObjectId,
-        email: user.email,
-        category: user.category,
-      };
+    } else {
+      if (user.category === 'company') {
+        payload = {
+          _id: user._id,
+          companyObjectId: user.companyObjectId,
+          email: user.email,
+          category: user.category,
+        };
+      }
+      if (user.category === 'people') {
+        payload = {
+          _id: user._id,
+          peopleObjectId: user.peopleObjectId,
+          email: user.email,
+          category: user.category,
+        };
+      }
     }
     return {
       accessToken: this.jwtService.sign(payload, {

@@ -80,5 +80,5 @@ export class CreateProjectDto {
     description: '프로젝트 태그(최대 8개)',
   })
   @IsString({ each: true })
-  tags: [string];
+  hashtags: [string];
 }

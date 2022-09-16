@@ -86,7 +86,7 @@ export class Project {
 
   // 프로젝트 태그 (최대 8개)
   @Prop({ required: true })
-  tags: [string];
+  hashtags: [string];
 
   @Prop({ default: Date.now })
   createdAt: Date;
