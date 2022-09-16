@@ -15,9 +15,9 @@ export class Company {
   @Prop({ required: true })
   name: string;
 
-  // @Prop()
   // 기업 프로필 사진
-  // companyImage: string;
+  @Prop()
+  image: string;
 
   // 업종
   @Prop({ required: true })

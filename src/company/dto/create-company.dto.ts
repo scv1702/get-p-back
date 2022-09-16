@@ -9,10 +9,6 @@ export class CreateCompanyDto {
   @IsString()
   name: string;
 
-  // 기업 프로필 사진
-  // @IsString()
-  // companyImage: string;
-
   @ApiProperty({
     description: '업종',
   })

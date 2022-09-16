@@ -1,6 +1,6 @@
 // 라이브러리 등록
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class CreatePeopleDto {
   @ApiProperty({
@@ -14,12 +14,6 @@ export class CreatePeopleDto {
   })
   @IsString()
   school: string;
-
-  @ApiProperty({
-    description: '프로필 사진',
-  })
-  @IsOptional()
-  image: Express.Multer.File;
 
   @ApiProperty({
     description: '전공',
