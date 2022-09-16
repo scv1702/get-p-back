@@ -57,7 +57,7 @@ export class CompanyController {
     @Body() createCompanyDto: CreateCompanyDto,
   ): Promise<Company> {
     const user = await this.usersService.findOne({ _id: userId });
-    if (!user.category! && user.companyObjectId) {
+    if (!user.category && !user.companyObjectId) {
       return await this.companyService.signUp(userId, createCompanyDto);
     }
   }
