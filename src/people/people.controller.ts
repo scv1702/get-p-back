@@ -12,6 +12,9 @@ import {
   ForbiddenException,
   UseInterceptors,
   UploadedFile,
+  Res,
+  StreamableFile,
+  Render,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -23,6 +26,8 @@ import {
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
+import { join } from 'path';
+import { createReadStream } from 'fs';
 
 // Data Transfer Object 등록
 import { CreatePeopleDto } from './dto/create-people.dto';
@@ -64,7 +69,7 @@ export class PeopleController {
     return await this.peopleService.signUp(createPeopleDto);
   }
 
-  // 피플 프로필 등록
+  // 피플 프로필 사진 등록
   @ApiCreatedResponse({
     description: '프로필 사진이 등록되었습니다.',
   })

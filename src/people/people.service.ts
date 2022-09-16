@@ -2,6 +2,7 @@
 import { Model, Types } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import fs from 'fs';
 
 // 스키마 등록
 import { People, PeopleDocument } from './schemas/people.schema';
