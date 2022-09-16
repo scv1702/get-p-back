@@ -48,20 +48,6 @@ export class CreatePeopleDto {
   phoneNumber: string;
 
   @ApiProperty({
-    description: '이메일',
-  })
-  @ApiProperty()
-  @IsString()
-  email: string;
-
-  @ApiProperty({
-    description: '비밀번호',
-  })
-  @ApiProperty()
-  @IsString()
-  password: string;
-
-  @ApiProperty({
     description: '태그(최대 8개)',
   })
   @IsString({ each: true })

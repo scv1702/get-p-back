@@ -6,10 +6,8 @@ import {
   Get,
   Post,
   Param,
-  Delete,
   UseGuards,
   Put,
-  Request,
   UseInterceptors,
   UploadedFile,
 } from '@nestjs/common';
@@ -28,6 +26,7 @@ import { storage } from 'src/utils/image.storage';
 
 // 서비스 등록
 import { CompanyService } from './company.service';
+import { UsersService } from 'src/users/users.service';
 
 // Data Transfer Object 등록
 import { CreateCompanyDto } from './dto/create-company.dto';
@@ -39,7 +38,10 @@ import { Company } from './schemas/company.schema';
 @ApiTags('회사')
 @Controller('company')
 export class CompanyController {
-  constructor(private readonly companyService: CompanyService) {}
+  constructor(
+    private readonly companyService: CompanyService,
+    private readonly usersService: UsersService,
+  ) {}
 
   // 전체 회사 목록 조회
   @ApiOkResponse({ description: '전체 회사 목록을 반환합니다.' })
@@ -48,41 +50,25 @@ export class CompanyController {
     return await this.companyService.findAll();
   }
 
-  // 회사 회원가입
+  // 회사 등록
   @ApiCreatedResponse({
-    description: 'Get-P 회사로 회원 가입이 완료되었습니다.',
-  })
-  @ApiBody({ type: CreateCompanyDto })
-  @Post()
-  async signUp(@Body() createCompanyDto: CreateCompanyDto): Promise<Company> {
-    return await this.companyService.signUp(createCompanyDto);
-  }
-
-  // 회사 회원 탈퇴
-  @ApiNoContentResponse({
-    description: 'Get-P 회원 탈퇴가 완료되었습니다.',
-  })
-  @ApiForbiddenResponse({
-    description: '허가되지 않은 접근입니다.',
-  })
-  @ApiParam({
-    description: '회사 ObjectId',
-    name: 'companyId',
+    description: 'Get-P 회사로 등록이 완료되었습니다.',
   })
   @UseGuards(AuthGuard('jwt'))
-  @Delete(':companyId')
-  async delete(@Param('companyId') companyId: string, @Request() req) {
-    const company = await this.companyService.findOne({ _id: companyId });
-    if (company.userObjectId.toString() === req.user._id) {
-      await this.companyService.delete(company._id.toString(), req.user._id);
-      return { message: 'Get-P 회원 탈퇴가 완료되었습니다.' };
+  @Post(':userId')
+  async signUp(
+    @Param('userId') userId: string,
+    @Body() createCompanyDto: CreateCompanyDto,
+  ): Promise<Company> {
+    const user = await this.usersService.findOne({ _id: userId });
+    if (!user.category! && user.companyObjectId) {
+      return await this.companyService.signUp(userId, createCompanyDto);
     }
-    throw new ForbiddenException('허가되지 않은 접근입니다.');
   }
 
-  // 회사 회원 정보 수정
+  // 회사 정보 수정
   @ApiNoContentResponse({
-    description: '회원 정보가 수정되었습니다.',
+    description: '회사 정보가 수정되었습니다.',
   })
   @ApiForbiddenResponse({
     description: '허가되지 않은 접근입니다.',
@@ -97,12 +83,13 @@ export class CompanyController {
   async update(
     @Param('companyId') companyId: string,
     @Body() updateCompanyDto: UpdateCompanyDto,
-    @Request() req,
   ): Promise<Company> {
-    const company = await this.companyService.findOne({ _id: companyId });
-    if (company.userObjectId.toString() === req.user._id) {
+    const user = await this.usersService.findOne({
+      companyObjectId: companyId,
+    });
+    if (user.companyObjectId) {
       return await this.companyService.update(
-        company._id.toString(),
+        user.companyObjectId.toString(),
         updateCompanyDto,
       );
     }
@@ -119,11 +106,13 @@ export class CompanyController {
   async uploadImage(
     @Param('companyId') companyId: string,
     @UploadedFile() image: Express.Multer.File,
-    @Request() req,
   ) {
-    const company = await this.companyService.findOne({ _id: companyId });
-    if (company.userObjectId.toString() === req.user._id) {
-      await this.companyService.uploadImage(company._id.toString(), image);
+    const user = await this.usersService.findOne({
+      companyObjectId: companyId,
+    });
+    const companyObjectId = user.companyObjectId.toString();
+    if (user.companyObjectId) {
+      await this.companyService.uploadImage(companyObjectId, image);
       return { message: image.filename };
     }
     throw new ForbiddenException('허가되지 않은 접근입니다.');

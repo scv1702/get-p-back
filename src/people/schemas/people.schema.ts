@@ -62,10 +62,6 @@ export class People {
   @Prop({ type: Types.ObjectId, ref: 'Project' })
   projects: [Project];
 
-  // 계정
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-  userObjectId: User;
-
   // 태그 (최대 8개)
   @Prop({ required: true })
   tags: [string];

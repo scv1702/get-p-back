@@ -13,7 +13,7 @@ export class Project {
 
   // 해당 프로젝트 수행을 의뢰한 회사
   @Prop({ type: Types.ObjectId, ref: 'Company', required: true })
-  requester: Company;
+  company: Company;
 
   // 프로젝트 위치
   @Prop({ required: true })

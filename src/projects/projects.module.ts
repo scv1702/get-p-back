@@ -12,18 +12,17 @@ import { Project, ProjectSchema } from './schemas/project.schema';
 import { ProjectsController } from './projects.controller';
 
 // 모듈 등록
-import { AuthModule } from 'src/auth/auth.module';
 import { ProposalsModule } from 'src/proposals/proposals.module';
 import { CompanyModule } from 'src/company/company.module';
 
 @Module({
   imports: [
-    AuthModule,
     ProposalsModule,
     CompanyModule,
     MongooseModule.forFeature([{ name: Project.name, schema: ProjectSchema }]),
   ],
   providers: [ProjectsService],
   controllers: [ProjectsController],
+  exports: [ProjectsService],
 })
 export class ProjectsModule {}

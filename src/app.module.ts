@@ -10,10 +10,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 // 모듈 등록
-import { PeopleModule } from './people/people.module';
-import { CompanyModule } from './company/company.module';
-import { ProjectsModule } from './projects/projects.module';
 import { HashtagModule } from './hashtag/hashtag.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -21,9 +19,7 @@ import { HashtagModule } from './hashtag/hashtag.module';
       isGlobal: true,
     }),
     MongooseModule.forRoot(process.env.DB_URI),
-    PeopleModule,
-    CompanyModule,
-    ProjectsModule,
+    AuthModule,
     HashtagModule,
   ],
   controllers: [AppController],

@@ -26,14 +26,15 @@ export class CompanyService {
     return createdCompany.save();
   }
 
-  // 회사 회원가입
-  async signUp(createCompanyDto: CreateCompanyDto): Promise<Company> {
-    const { email, password, ...remainder } = createCompanyDto;
-    const user = await this.usersService.signUp(email, password, 'company');
-    return await this.create({
-      ...remainder,
-      userObjectId: user._id,
-    });
+  // 회사 등록
+  async signUp(
+    userId: string,
+    createCompanyDto: CreateCompanyDto,
+  ): Promise<Company> {
+    const createdCompany = await this.create(createCompanyDto);
+    const companyObjectId = createdCompany._id.toString();
+    await this.usersService.enrollmentToCompany(userId, companyObjectId);
+    return createdCompany;
   }
 
   // 전체 회사 목록 조회
@@ -47,9 +48,8 @@ export class CompanyService {
   }
 
   // 회사 회원 탈퇴
-  async delete(companyId: string, userId: string) {
+  async delete(companyId: string) {
     await this.companyModel.findByIdAndRemove(companyId);
-    await this.usersService.delete(userId);
   }
 
   // 회사 화원 정보 수정

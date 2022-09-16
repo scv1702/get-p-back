@@ -1,5 +1,5 @@
 // 라이브러리 등록
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
 // 모듈 등록
@@ -18,8 +18,7 @@ import { AuthModule } from 'src/auth/auth.module';
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Company.name, schema: CompanySchema }]),
-    UsersModule,
-    AuthModule,
+    forwardRef(() => UsersModule),
   ],
   controllers: [CompanyController],
   providers: [CompanyService],

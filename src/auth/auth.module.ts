@@ -1,5 +1,5 @@
 // 라이브러리 등록
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 
@@ -24,7 +24,7 @@ import { EmailModule } from 'src/email/email.module';
       signOptions: { expiresIn: '2h' },
     }),
     EmailModule,
-    UsersModule,
+    forwardRef(() => UsersModule),
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy],
   controllers: [AuthController],

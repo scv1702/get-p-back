@@ -2,9 +2,6 @@
 import { Document, Types } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-// 스키마 등록
-import { User } from 'src/users/schemas/user.schema';
-
 export type CompanyDocument = Company & Document;
 
 @Schema()
@@ -42,10 +39,6 @@ export class Company {
   // 기업 주소
   @Prop({ required: true })
   address: string;
-
-  // 계정
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-  userObjectId: User;
 }
 
 export const CompanySchema = SchemaFactory.createForClass(Company);

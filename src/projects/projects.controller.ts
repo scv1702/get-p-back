@@ -11,12 +11,9 @@ import {
   Request,
   ForbiddenException,
   NotFoundException,
-  UploadedFile,
-  UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
-import { FileInterceptor } from '@nestjs/platform-express';
 
 // Data Transfer Object 등록
 import { CreateProjectDto } from './dto/create-project.dto';
@@ -38,12 +35,6 @@ export class ProjectsController {
     private readonly projectsService: ProjectsService,
     private readonly proposalsService: ProposalsService,
   ) {}
-
-  @Post('profile')
-  @UseInterceptors(FileInterceptor('file'))
-  uploadFile(@UploadedFile() file: Express.Multer.File) {
-    console.log(file);
-  }
 
   // 전체 프로젝트 목록 조회
   @Get()

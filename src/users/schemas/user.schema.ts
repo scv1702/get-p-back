@@ -1,6 +1,8 @@
 // 라이브러리 등록
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import { Company } from 'src/company/schemas/company.schema';
+import { People } from 'src/people/schemas/people.schema';
 
 export type UserDocument = User & Document;
 
@@ -38,9 +40,14 @@ export class User {
   })
   verify: boolean;
 
-  // 사용자 유형 (회사 또는 피플)
-  @Prop({ required: true })
+  @Prop()
   category: string;
+
+  @Prop({ type: Types.ObjectId, ref: 'People' })
+  peopleObjectId: People;
+
+  @Prop({ type: Types.ObjectId, ref: 'Company' })
+  companyObjectId: Company;
 
   @Prop({ default: Date.now })
   createdAt: Date;

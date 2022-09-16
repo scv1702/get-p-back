@@ -40,6 +40,11 @@ export class ProjectsService {
   }
 
   // 프로젝트 조회
+  async find(options: object = {}): Promise<Array<Project>> {
+    return await this.projectModel.find(options);
+  }
+
+  // 프로젝트 조회
   async findOne(queries: object = {}) {
     const project: any = await this.projectModel.findOne(queries);
     const company = await this.companyService.findOne({

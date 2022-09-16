@@ -14,6 +14,8 @@ import { User, UserDocument } from './schemas/user.schema';
 // 서비스 등록
 import { EmailService } from 'src/email/email.service';
 
+import { CreateUserDto } from './dto/create-user.dto';
+
 @Injectable()
 export class UsersService {
   constructor(
@@ -32,15 +34,12 @@ export class UsersService {
   }
 
   // 회원가입 요청 처리
-  async signUp(
-    email: string,
-    password: string,
-    category: string,
-  ): Promise<User> {
+  async signUp(createUserDto: CreateUserDto): Promise<User> {
+    const { email, password } = createUserDto;
     const user = await this.findOne({ email });
     if (!user) {
       // this.emailService.send(email);
-      return await this._signUp(email, password, category);
+      return await this._signUp(email, password);
     }
     throw new ForbiddenException(
       '이미 가입된 이메일 입니다. 다른 이메일을 입력해주세요.',
@@ -63,7 +62,7 @@ export class UsersService {
   }
 
   // 회원가입
-  _signUp(email: string, password: string, category: string): Promise<User> {
+  _signUp(email: string, password: string): Promise<User> {
     return new Promise((resolve, _) => {
       // salt 값 생성
       randomBytes(64, (err, buf) => {
@@ -89,7 +88,6 @@ export class UsersService {
               email,
               password: key.toString('base64'),
               salt: buf.toString('base64'),
-              category,
             });
             resolve(user);
           },
@@ -99,7 +97,31 @@ export class UsersService {
   }
 
   // 사용자 탈퇴
-  async delete(userID: string) {
-    await this.userModel.findByIdAndRemove(userID);
+  async delete(userId: string) {
+    await this.userModel.findByIdAndRemove(userId);
+  }
+
+  // Get-P 피플 등록
+  async enrollmentToPeople(
+    userId: string,
+    peopleObjectId: string,
+  ): Promise<User> {
+    return await this.userModel.findByIdAndUpdate(
+      userId,
+      { peopleObjectId, category: 'people' },
+      { new: true },
+    );
+  }
+
+  // Get-P 회사 등록
+  async enrollmentToCompany(
+    userId: string,
+    companyObjectId: string,
+  ): Promise<User> {
+    return await this.userModel.findByIdAndUpdate(
+      userId,
+      { companyObjectId, category: 'company' },
+      { new: true },
+    );
   }
 }

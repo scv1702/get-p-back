@@ -8,10 +8,10 @@ import { People, PeopleDocument } from './schemas/people.schema';
 
 // Data Transfer Object 등록
 import { CreatePeopleDto } from './dto/create-people.dto';
+import { UpdatePeopleDto } from './dto/update-people.dto';
 
 // 서비스 등록
 import { UsersService } from 'src/users/users.service';
-import { UpdatePeopleDto } from './dto/update-people.dto';
 
 @Injectable()
 export class PeopleService {
@@ -21,19 +21,20 @@ export class PeopleService {
   ) {}
 
   // 피플 도큐먼트 생성
-  async create(people): Promise<People> {
+  async create(people: CreatePeopleDto): Promise<People> {
     const createdPeople = new this.peopleModel(people);
     return createdPeople.save();
   }
 
-  // 피플 회원 가입
-  async signUp(createPeopleDto: CreatePeopleDto): Promise<People> {
-    const { email, password, ...remainder } = createPeopleDto;
-    const user = await this.usersService.signUp(email, password, 'people');
-    return await this.create({
-      ...remainder,
-      userObjectId: user._id,
-    });
+  // 피플 등록
+  async signUp(
+    userId: string,
+    createPeopleDto: CreatePeopleDto,
+  ): Promise<People> {
+    const createdPeople = await this.create(createPeopleDto);
+    const peopleObjectId = createdPeople._id.toString();
+    await this.usersService.enrollmentToPeople(userId, peopleObjectId);
+    return createdPeople;
   }
 
   // 피플 조회
@@ -47,9 +48,8 @@ export class PeopleService {
   }
 
   // 피플 회원 탈퇴
-  async delete(peopleId: string, userId: string) {
+  async delete(peopleId: string) {
     await this.peopleModel.findByIdAndRemove(peopleId);
-    await this.usersService.delete(userId);
   }
 
   // 회사 조회
