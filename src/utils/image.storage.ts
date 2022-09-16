@@ -5,7 +5,7 @@ import { extname } from 'path';
 export const storage = (userType: string): MulterOptions => {
   return {
     storage: diskStorage({
-      destination: `static/${userType}/image`,
+      destination: `public/${userType}/image`,
       filename: (req, file, cb) => {
         const randomName = Array(32)
           .fill(null)
