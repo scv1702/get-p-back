@@ -8,11 +8,8 @@ import {
   UseGuards,
   Param,
   ForbiddenException,
-  UseInterceptors,
-  UploadedFile,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiCreatedResponse,
   ApiForbiddenResponse,
@@ -32,8 +29,6 @@ import { UsersService } from 'src/users/users.service';
 
 // 스키마 등록
 import { People } from './schemas/people.schema';
-
-import { storage } from 'src/utils/image.storage';
 
 @ApiTags('피플')
 @Controller('people')
@@ -71,28 +66,6 @@ export class PeopleController {
     if (!user.category && !user.peopleObjectId) {
       return await this.peopleService.signUp(userId, createPeopleDto);
     }
-  }
-
-  // 피플 프로필 사진 등록
-  @ApiCreatedResponse({
-    description: '프로필 사진이 등록되었습니다.',
-  })
-  @UseGuards(AuthGuard('jwt'))
-  @Post(':peopleId/image')
-  @UseInterceptors(FileInterceptor('image', storage('people')))
-  async uploadImage(
-    @Param('peopleId') peopleId: string,
-    @UploadedFile() image: Express.Multer.File,
-  ) {
-    const user = await this.usersService.findOne({ peopleObjectId: peopleId });
-    if (user.peopleObjectId) {
-      await this.peopleService.uploadImage(
-        user.peopleObjectId.toString(),
-        image,
-      );
-      return { message: image.filename };
-    }
-    throw new ForbiddenException('허가되지 않은 접근입니다.');
   }
 
   // 피플 회원 정보 수정

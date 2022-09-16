@@ -8,11 +8,8 @@ import {
   Param,
   UseGuards,
   Put,
-  UseInterceptors,
-  UploadedFile,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiBody,
   ApiCreatedResponse,
@@ -22,7 +19,6 @@ import {
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
-import { storage } from 'src/utils/image.storage';
 
 // 서비스 등록
 import { CompanyService } from './company.service';
@@ -92,28 +88,6 @@ export class CompanyController {
         user.companyObjectId.toString(),
         updateCompanyDto,
       );
-    }
-    throw new ForbiddenException('허가되지 않은 접근입니다.');
-  }
-
-  // 회사 프로필 사진 등록
-  @ApiCreatedResponse({
-    description: '프로필 사진이 등록되었습니다.',
-  })
-  @UseGuards(AuthGuard('jwt'))
-  @Post(':companyId/image')
-  @UseInterceptors(FileInterceptor('image', storage('company')))
-  async uploadImage(
-    @Param('companyId') companyId: string,
-    @UploadedFile() image: Express.Multer.File,
-  ) {
-    const user = await this.usersService.findOne({
-      companyObjectId: companyId,
-    });
-    const companyObjectId = user.companyObjectId.toString();
-    if (user.companyObjectId) {
-      await this.companyService.uploadImage(companyObjectId, image);
-      return { message: image.filename };
     }
     throw new ForbiddenException('허가되지 않은 접근입니다.');
   }

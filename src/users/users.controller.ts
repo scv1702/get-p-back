@@ -8,7 +8,9 @@ import {
   Param,
   Post,
   Req,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiCreatedResponse,
@@ -28,6 +30,8 @@ import { CompanyService } from 'src/company/company.service';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { storage } from 'src/utils/image.storage';
 
 @ApiTags('사용자')
 @Controller('users')
@@ -79,6 +83,35 @@ export class UsersController {
         await this.companyService.delete(user.companyObjectId.toString());
         return { message: 'Get-P 회원 탈퇴가 완료되었습니다.' };
       }
+    }
+    throw new ForbiddenException('허가되지 않은 접근입니다.');
+  }
+
+  // 프로필 사진 등록
+  @ApiCreatedResponse({
+    description: '프로필 사진이 등록되었습니다.',
+  })
+  @UseGuards(AuthGuard('jwt'))
+  @Post(':userId/image')
+  @UseInterceptors(FileInterceptor('image', storage()))
+  async uploadImage(
+    @Param('userId') userId: string,
+    @UploadedFile() image: Express.Multer.File,
+  ) {
+    const user = await this.usersService.findOne({ _id: userId });
+    if (user.category === 'people' && user.peopleObjectId) {
+      await this.peopleService.uploadImage(
+        user.peopleObjectId.toString(),
+        image,
+      );
+      return { message: image.filename };
+    }
+    if (user.category === 'company' && user.companyObjectId) {
+      await this.companyService.uploadImage(
+        user.companyObjectId.toString(),
+        image,
+      );
+      return { message: image.filename };
     }
     throw new ForbiddenException('허가되지 않은 접근입니다.');
   }

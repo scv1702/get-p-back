@@ -2,10 +2,10 @@ import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 
-export const storage = (userType: string): MulterOptions => {
+export const storage = (): MulterOptions => {
   return {
     storage: diskStorage({
-      destination: `public/${userType}/image`,
+      destination: `public/image`,
       filename: (req, file, cb) => {
         const randomName = Array(32)
           .fill(null)
