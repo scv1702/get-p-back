@@ -51,5 +51,5 @@ export class CreatePeopleDto {
     description: '태그(최대 8개)',
   })
   @IsString({ each: true })
-  tags: [string];
+  hashtags: [string];
 }

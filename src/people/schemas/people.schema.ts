@@ -64,7 +64,7 @@ export class People {
 
   // 태그 (최대 8개)
   @Prop({ required: true })
-  tags: [string];
+  hashtags: [string];
 }
 
 export const PeopleSchema = SchemaFactory.createForClass(People);

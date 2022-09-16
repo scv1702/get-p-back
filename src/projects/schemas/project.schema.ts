@@ -76,13 +76,13 @@ export class Project {
   @Prop({ required: true })
   applicationDeadline: string;
 
+  // 작업 시작일
+  @Prop({ required: true })
+  startDate: Date;
+
   // 작업 마감일
   @Prop({ required: true })
-  deadline: Date;
-
-  // 작업 기간 (일 단위)
-  @Prop({ required: true })
-  duration: Date;
+  endDate: Date;
 
   // 프로젝트 태그 (최대 8개)
   @Prop({ required: true })

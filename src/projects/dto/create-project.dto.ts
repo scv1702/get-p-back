@@ -62,19 +62,19 @@ export class CreateProjectDto {
     description: '지원자 모집 마감일',
   })
   @IsString()
-  applicationDeadline: string;
+  applicationDeadline: Date;
+
+  @ApiProperty({
+    description: '작업 시작일',
+  })
+  @IsString()
+  startDate: Date;
 
   @ApiProperty({
     description: '작업 마감일',
   })
   @IsString()
-  deadline: string;
-
-  @ApiProperty({
-    description: '작업 기간(일 단위)',
-  })
-  @IsNumber()
-  duration: number;
+  endDate: Date;
 
   @ApiProperty({
     description: '프로젝트 태그(최대 8개)',
