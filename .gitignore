@@ -3,7 +3,7 @@
 /node_modules
 
 # static
-/static
+/public
 
 # Logs
 logs
