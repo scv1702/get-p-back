@@ -5,6 +5,7 @@ import {
   Delete,
   ForbiddenException,
   Get,
+  NotFoundException,
   Param,
   Post,
   Req,
@@ -46,6 +47,32 @@ export class UsersController {
   async findAll(): Promise<Array<User>> {
     const users = await this.usersService.findAll();
     return users;
+  }
+
+  // 사용자 조회
+  @Get('profile')
+  @UseGuards(AuthGuard('jwt'))
+  async findOneWithCategory(@Req() req) {
+    const user = await this.usersService.findOne({ _id: req.user._id });
+    if (user) {
+      if (user.category) {
+        if (user.category === 'company') {
+          const company = await this.companyService.findOne({
+            _id: user.companyObjectId,
+          });
+          return { ...user, company };
+        }
+        if (user.category === 'people') {
+          const people = this.peopleService.findOne({
+            _id: user.peopleObjectId,
+          });
+          return { ...user, people };
+        }
+      } else {
+        return user;
+      }
+    }
+    throw new NotFoundException('존재하지 않는 사용자입니다.');
   }
 
   // 사용자 이미지 조회
