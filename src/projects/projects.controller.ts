@@ -125,6 +125,7 @@ export class ProjectsController {
     @Request() req,
     @Body() createProposalDto: CreateProposalDto,
   ) {
+    console.log(req.user);
     if (req.user.category === 'people') {
       const proposal = await this.proposalsService.create(
         projectId,

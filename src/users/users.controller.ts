@@ -63,7 +63,7 @@ export class UsersController {
           return { user, company };
         }
         if (user.category === 'people') {
-          const people = this.peopleService.findOne({
+          const people = await this.peopleService.findOne({
             _id: user.peopleObjectId,
           });
           return { user, people };
