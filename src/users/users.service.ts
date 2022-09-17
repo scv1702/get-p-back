@@ -124,13 +124,4 @@ export class UsersService {
       { new: true },
     );
   }
-
-  // 프로필 사진 등록
-  async uploadImage(userId: string, image: Express.Multer.File) {
-    return await this.userModel.findByIdAndUpdate(
-      userId,
-      { image: image.filename },
-      { new: true },
-    );
-  }
 }

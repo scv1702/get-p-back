@@ -44,10 +44,6 @@ export class User {
   @Prop()
   category: string;
 
-  // 프로필 사진
-  @Prop()
-  image: string;
-
   @Prop({ type: Types.ObjectId, ref: 'People' })
   peopleObjectId: People;
 

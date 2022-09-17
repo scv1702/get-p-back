@@ -48,6 +48,25 @@ export class UsersController {
     return users;
   }
 
+  // 사용자 이미지 조회
+  @Get('image')
+  @UseGuards(AuthGuard('jwt'))
+  async findOne(@Req() req) {
+    const user = await this.usersService.findOne({ _id: req.user._id });
+    if (user.category === 'people') {
+      const people = await this.peopleService.findOne({
+        _id: user.peopleObjectId,
+      });
+      return { image: people.image };
+    }
+    if (user.category === 'company') {
+      const company = await this.companyService.findOne({
+        _id: user.companyObjectId,
+      });
+      return { image: company.image };
+    }
+  }
+
   // 회원 가입
   @ApiCreatedResponse({
     description: 'Get-P 회원 가입이 완료되었습니다.',
@@ -89,17 +108,14 @@ export class UsersController {
   @Post('image')
   @UseInterceptors(FileInterceptor('image', storage()))
   async uploadImage(@Req() req, @UploadedFile() image: Express.Multer.File) {
-    const userId = req.user._id;
-    const user = await this.usersService.findOne({ _id: userId });
+    const user = await this.usersService.findOne({ _id: req.user._id });
     if (user.category === 'people' && user.peopleObjectId) {
-      await this.usersService.uploadImage(userId, image);
       await this.peopleService.uploadImage(
         user.peopleObjectId.toString(),
         image,
       );
       return { message: image.filename };
     } else if (user.category === 'company' && user.companyObjectId) {
-      await this.usersService.uploadImage(userId, image);
       await this.companyService.uploadImage(
         user.companyObjectId.toString(),
         image,
