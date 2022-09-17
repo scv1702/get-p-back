@@ -12,7 +12,7 @@ export class Company {
   @Prop({ required: true })
   name: string;
 
-  // 기업 프로필 사진
+  // 프로필 사진
   @Prop()
   image: string;
 

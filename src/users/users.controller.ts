@@ -92,13 +92,14 @@ export class UsersController {
     const userId = req.user._id;
     const user = await this.usersService.findOne({ _id: userId });
     if (user.category === 'people' && user.peopleObjectId) {
+      await this.usersService.uploadImage(userId, image);
       await this.peopleService.uploadImage(
         user.peopleObjectId.toString(),
         image,
       );
       return { message: image.filename };
-    }
-    if (user.category === 'company' && user.companyObjectId) {
+    } else if (user.category === 'company' && user.companyObjectId) {
+      await this.usersService.uploadImage(userId, image);
       await this.companyService.uploadImage(
         user.companyObjectId.toString(),
         image,

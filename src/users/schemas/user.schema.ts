@@ -40,8 +40,13 @@ export class User {
   })
   verify: boolean;
 
+  // 사용자 종류
   @Prop()
   category: string;
+
+  // 프로필 사진
+  @Prop()
+  image: string;
 
   @Prop({ type: Types.ObjectId, ref: 'People' })
   peopleObjectId: People;
