@@ -1,4 +1,5 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Req } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { PusherService } from './pusher.service';
 
 @Controller('pusher')
@@ -6,12 +7,10 @@ export class PusherController {
   constructor(private pusherService: PusherService) {}
 
   @Post('messages')
-  async messages(
-    @Body('userId') userId: string,
-    @Body('message') message: string,
-  ) {
+  @UseGuards(AuthGuard('jwt'))
+  async messages(@Body('message') message: string, @Req() req) {
     await this.pusherService.trigger('chat', 'message', {
-      userId,
+      userId: req.user._id,
       message,
     });
     return { message: 'success' };
