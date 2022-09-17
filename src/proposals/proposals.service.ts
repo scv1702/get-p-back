@@ -16,12 +16,12 @@ export class ProposalsService {
   // 제안 생성
   async create(
     projectId: string,
-    proponent: string,
+    people: string,
     createProposalDto: CreateProposalDto,
   ): Promise<Proposal> {
     const createdProposal = new this.proposalModel({
       project: new Types.ObjectId(projectId),
-      proponent: new Types.ObjectId(proponent),
+      people: new Types.ObjectId(people),
       ...createProposalDto,
     });
     return createdProposal.save();
