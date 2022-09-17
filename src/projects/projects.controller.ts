@@ -131,10 +131,8 @@ export class ProjectsController {
         req.user.peopleObjectId,
         createProposalDto,
       );
-      return await this.projectsService.pushProposalToProject(
-        projectId,
-        proposal,
-      );
+      await this.projectsService.pushProposalToProject(projectId, proposal);
+      return proposal;
     }
     throw new ForbiddenException('허가되지 않은 접근입니다.');
   }

@@ -12,6 +12,7 @@ import { AppService } from './app.service';
 // 모듈 등록
 import { HashtagModule } from './hashtag/hashtag.module';
 import { AuthModule } from './auth/auth.module';
+import { PusherModule } from './pusher/pusher.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { AuthModule } from './auth/auth.module';
     MongooseModule.forRoot(process.env.DB_URI),
     AuthModule,
     HashtagModule,
+    PusherModule,
   ],
   controllers: [AppController],
   providers: [AppService],

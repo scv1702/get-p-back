@@ -18,10 +18,10 @@ export class Proposal {
 
   // 제안자(해당 프로젝트 수행을 원하는 피플)
   @Prop({ type: Types.ObjectId, ref: 'People', required: true })
-  proponent: People;
+  people: People;
 
   @Prop({ required: true })
-  description: string;
+  introduction: string;
 
   @Prop({ default: Date.now })
   createdAt: Date;

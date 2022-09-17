@@ -91,20 +91,20 @@ export class ProjectsService {
     const proposal = await this.proposalsService.findOne({ _id: proposalId });
     return await this.projectModel.findByIdAndUpdate(
       projectId,
-      { performer: proposal.proponent },
+      { performer: proposal.people },
       { new: true },
     );
   }
 
-  // 프로젝트에 제안 추가
   async pushProposalToProject(
     projectId: string,
     proposal: Proposal,
-  ): Promise<Project> {
-    return await this.projectModel.findByIdAndUpdate(
+  ): Promise<Proposal> {
+    await this.projectModel.findByIdAndUpdate(
       projectId,
       { $push: { proposals: proposal } },
       { new: true },
     );
+    return proposal;
   }
 }
