@@ -14,6 +14,10 @@ export class People {
   @Prop({ required: true })
   name: string;
 
+  // 프로필 사진
+  @Prop()
+  image: string;
+
   // 프로젝트 참여 횟수
   @Prop({ default: 0, required: true })
   participation: number;

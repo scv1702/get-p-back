@@ -65,4 +65,13 @@ export class CompanyService {
       },
     );
   }
+
+  // 피플 프로필 사진 등록
+  async uploadImage(companyId: string, image: Express.Multer.File) {
+    return await this.companyModel.findByIdAndUpdate(
+      companyId,
+      { image: image.filename },
+      { new: true },
+    );
+  }
 }
