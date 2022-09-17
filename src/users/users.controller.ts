@@ -60,13 +60,13 @@ export class UsersController {
           const company = await this.companyService.findOne({
             _id: user.companyObjectId,
           });
-          return { ...user, company };
+          return { user, company };
         }
         if (user.category === 'people') {
           const people = this.peopleService.findOne({
             _id: user.peopleObjectId,
           });
-          return { ...user, people };
+          return { user, people };
         }
       } else {
         return user;
