@@ -5,7 +5,7 @@ export class CreateProjectDto {
   @ApiProperty({
     description: '프로젝트 미팅 방식',
   })
-  @IsNumber()
+  @IsString()
   meeting: string;
 
   @ApiProperty({

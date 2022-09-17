@@ -52,7 +52,7 @@ export class UsersController {
   // 사용자 조회
   @Get('profile')
   @UseGuards(AuthGuard('jwt'))
-  async findOneWithCategory(@Req() req) {
+  async findOneWithProfile(@Req() req) {
     const user = await this.usersService.findOne({ _id: req.user._id });
     if (user) {
       if (user.category) {
